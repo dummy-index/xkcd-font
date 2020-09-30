@@ -4,6 +4,7 @@ import fontforge
 import os
 import glob
 import parse
+import base64
 
 fnames = sorted(glob.glob('../generated/characters/char_*.svg'))
 
@@ -13,7 +14,7 @@ for fname in fnames:
     
     pattern = 'char_L{line:d}_P{position:d}_x{x0:d}_y{y0:d}_x{x1:d}_y{y1:d}_{b64_str}.svg'
     result = parse.parse(pattern, os.path.basename(fname))
-    chars = tuple(result['b64_str'].decode('base64').decode('utf-8'))
+    chars = tuple(base64.b64decode(result['b64_str'].encode()).decode('utf-8'))
     bbox = (result['x0'], result['y0'], result['x1'], result['y1'])
     characters.append([result['line'], result['position'], bbox, fname, chars])
 
@@ -37,9 +38,9 @@ def basic_font():
     font.descent = 256;
 
     # We create a ligature lookup table.
-    font.addLookup('ligatures', 'gsub_ligature', (), [[b'liga',
-                                                       [[b'latn',
-                                                         [b'dflt']]]]])
+    font.addLookup('ligatures', 'gsub_ligature', (), [['liga',
+                                                       [['latn',
+                                                         ['dflt']]]]])
     font.addLookupSubtable('ligatures', 'liga')
    
     return font
@@ -62,7 +63,7 @@ def tmp_symlink(fname):
     target = tempfile.mktemp(suffix=os.path.splitext(fname)[1])
     fname = os.path.normpath(os.path.abspath(fname))
     try:
-        os.symlink(fname, target)
+        shutil.copy(fname, target)
         yield target
     finally:
         if os.path.exists(target):
@@ -214,7 +215,7 @@ def autokern(font):
     all_chars = caps + lower
 
     # Add a kerning lookup table.
-    font.addLookup('kerning', 'gpos_pair', (), [[b'kern', [[b'latn', [b'dflt']]]]])
+    font.addLookup('kerning', 'gpos_pair', (), [['kern', [['latn', ['dflt']]]]])
     font.addLookupSubtable('kerning', 'kern')
     
     # Everyone knows that two slashes together need kerning... (even if they didn't realise it)
