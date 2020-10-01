@@ -63,7 +63,10 @@ def tmp_symlink(fname):
     target = tempfile.mktemp(suffix=os.path.splitext(fname)[1])
     fname = os.path.normpath(os.path.abspath(fname))
     try:
-        shutil.copy(fname, target)
+        if os.name == 'nt':
+            os.link(fname, target)
+        else:
+            os.symlink(fname, target)
         yield target
     finally:
         if os.path.exists(target):
@@ -117,18 +120,19 @@ for line, position, bbox, fname, chars in characters:
             this_line.setdefault('cap-height', []).append(bbox[1])
 
 
-import numpy as np
+try:
+    import statistics as np
+except ImportError:
+    import numpy as np
 import psMat
 
-def scale_glyph(char, char_bbox, baseline, cap_height):
+def scale_glyph(c, char_bbox, baseline, cap_height):
     # TODO: The code in this function is convoluted - it can be hugely simplified.
     # Essentially, all this function does is figure out how much
     # space a normal glyph takes, then looks at how much space *this* glyph takes.
     # With that magic ratio in hand, I now look at how much space the glyph *currently*
     # takes, and scale it to the full EM. On second thoughts, this function really does
     # need to be convoluted, so maybe the code isn't *that* bad...
-    
-    font = char.font
     
     # Get hold of the bounding box information for the imported glyph.
     import_bbox = c.boundingBox()
@@ -137,8 +141,8 @@ def scale_glyph(char, char_bbox, baseline, cap_height):
     # Note that timportOutlines doesn't guarantee glyphs will be put in any particular location,
     # so translate to the bottom and middle.
     
-    target_baseline = char.font.descent
-    top = char.font.ascent
+    target_baseline = c.font.descent
+    top = c.font.ascent
     top_ratio = top / (top + target_baseline)
     
     y_base_delta_baseline = char_bbox[3] - baseline
@@ -152,15 +156,15 @@ def scale_glyph(char, char_bbox, baseline, cap_height):
     # A nice glyph size, in pixels. NOTE: In pixel space, cap_height is smaller than baseline, so make it positive.
     full_glyph_size = -(cap_height - baseline) / top_ratio
     
-    to_canvas_coord_from_px = full_glyph_size / font.em
+    to_canvas_coord_from_px = full_glyph_size / c.font.em
     
     anchor_ratio = (top + target_baseline) / height
     
     # pixel scale factor
-    px_sf = (top + target_baseline) / font.em
+    px_sf = (top + target_baseline) / c.font.em
     
     frac_of_full_size = (height / full_glyph_size)
-    import_frac_1000 = font.em / import_height
+    import_frac_1000 = c.font.em / import_height
     
     t = psMat.scale(frac_of_full_size * import_frac_1000)
     c.transform(t)
