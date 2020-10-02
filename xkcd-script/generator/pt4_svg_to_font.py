@@ -287,5 +287,8 @@ if not os.path.exists(os.path.dirname(font_fname)):
     os.makedirs(os.path.dirname(font_fname))
 if os.path.exists(font_fname):
     os.remove(font_fname)
-font.generate(font_fname)
+#font.generate(font_fname) => GSUB/GPOS don't saved
+#font.generate(font_fname, flags=['opentype']) => arbitrarily [Populate]d
+font.save(font_fname)
 
+font.close()
