@@ -225,13 +225,16 @@ def autokern(font):
     # Everyone knows that two slashes together need kerning... (even if they didn't realise it)
     font.autoKern('kern', 150, [charname('/'), charname('\\')], [charname('/'), charname('\\')])
 
-    font.autoKern('kern', 60, ['r', 's'], lower, minKern=50)
-    font.autoKern('kern', 100, ['f'], lower, minKern=50)
+    font.autoKern('kern', 30, ['C'], all_chars)
+    font.autoKern('kern', 60, ['r'], lower, minKern=50)
     font.autoKern('kern', 60, lower, ['g'], minKern=50)
+    font.autoKern('kern', 80, ['s'], lower, minKern=30)
+    font.autoKern('kern', 100, ['f'], lower, minKern=50)
+    font.autoKern('kern', 100, ['C'], ['f', 't', 'v'])
+    font.autoKern('kern', 150, ['C'], ['V'])
+    font.autoKern('kern', 150, ['T', 'F', 'J', 'T_T'], all_chars, onlyCloser=True)
     font.autoKern('kern', 180, all_chars, ['j'], minKern=35)
     
-    font.autoKern('kern', 150, ['T', 'F', 'J'], all_chars)
-    font.autoKern('kern', 30, ['C'], all_chars)
 
 
 font = basic_font()
@@ -259,6 +262,7 @@ for line, position, bbox, fname, chars in characters:
             continue
         
     c = create_char(font, chars, fname)
+    c.comment = os.path.basename(fname)
 
     # Get the linestats for this character.
     line_features = line_stats[line]
