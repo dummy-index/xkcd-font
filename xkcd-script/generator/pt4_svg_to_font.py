@@ -198,6 +198,14 @@ def translate_glyph(c, char_bbox, cap_height, baseline):
     c.transform(t)
 
 
+def weight_glyph(c, stroke_width):
+    # Dilate the glyph with bottom keeping.
+
+    c.changeWeight(stroke_width, 'CJK')
+    t = psMat.translate(0, stroke_width / 2)
+    c.transform(t)
+
+
 def charname(char):
     # Give the fontforge name for the given character.
     return fontforge.nameFromUnicode(ord(char))
@@ -225,16 +233,19 @@ def autokern(font):
     # Everyone knows that two slashes together need kerning... (even if they didn't realise it)
     font.autoKern('kern', 150, [charname('/'), charname('\\')], [charname('/'), charname('\\')])
 
+    # Should be ascending order in 'separation.'
     font.autoKern('kern', 30, ['C'], all_chars)
     font.autoKern('kern', 60, ['r'], lower, minKern=50)
     font.autoKern('kern', 60, lower, ['g'], minKern=50)
     font.autoKern('kern', 80, ['s'], lower, minKern=30)
     font.autoKern('kern', 100, ['f'], lower, minKern=50)
-    font.autoKern('kern', 100, ['C'], ['f', 't', 'v'])
-    font.autoKern('kern', 150, ['C'], ['V'])
     font.autoKern('kern', 150, ['T', 'F', 'J', 'T_T'], all_chars, onlyCloser=True)
     font.autoKern('kern', 180, all_chars, ['j'], minKern=35)
     
+    # onlyCloser=True gives more stable results.
+    font.autoKern('kern', 60, ['r_r'], lower, touch=True, onlyCloser=True)
+    font.autoKern('kern', 30, ['C'], ['f', 't'], touch=True)
+    font.autoKern('kern', 60, ['C'], ['V', 'v'], touch=True)
 
 
 font = basic_font()
@@ -276,6 +287,11 @@ for line, position, bbox, fname, chars in characters:
         c, bbox,
         baseline=np.mean(line_features['baseline']),
         cap_height=np.mean(line_features['cap-height']))
+    
+    if line == 0:
+        weight_glyph(c, 10)
+    if chars == ('|',):
+        c.transform(psMat.compose(psMat.scale(1, 1.3), psMat.translate(0, -100)))
 
     # Simplify, then put the vertices on rounded coordinate positions.
     c.simplify()
