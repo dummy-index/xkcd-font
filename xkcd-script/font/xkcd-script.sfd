@@ -15,13 +15,13 @@ InvalidEm: 0
 LayerCount: 2
 Layer: 0 0 "Back" 1
 Layer: 1 0 "Fore" 0
-XUID: [1021 50 1675931816 2620]
+XUID: [1021 185 -592517203 22774]
 UniqueID: -1
 OS2Version: 0
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
-CreationTime: 1601802097
-ModificationTime: 1601802103
+CreationTime: 1602079384
+ModificationTime: 1602079391
 OS2TypoAscent: 0
 OS2TypoAOffset: 1
 OS2TypoDescent: 0
@@ -46,7 +46,7 @@ DisplaySize: -48
 AntiAlias: 1
 FitToEm: 0
 OnlyBitmaps: 1
-BeginChars: 1114135 145
+BeginChars: 1114135 147
 
 StartChar: a
 Encoding: 97 97 0
@@ -6467,28 +6467,28 @@ EndSplineSet
 Comment: "char_L8_P15_x4497_y4561_x4723_y4609_4oCT.svg"
 EndChar
 
-StartChar: uni2010
-Encoding: 8208 8208 91
-Width: 415
+StartChar: hyphen
+Encoding: 45 45 91
+Width: 373
 VWidth: 440
 Flags: HW
 LayerCount: 2
 Fore
 SplineSet
-309 331 m 0
- 346 335 353 335 361 331 c 0
- 371 326 373 316 375 294 c 0
- 377 269 373 263 351 257 c 0
- 328 251 291 248 205 244 c 0
- 165 242 82 235 52 239 c 0
- 28 242 23 249 21 276 c 0
- 20 292 20 295 24 301 c 0
- 28 308 28 309 41 310 c 0
- 68 312 79 317 116 319 c 0
- 154 321 180 325 213 325 c 0
- 230 325 260 326 309 331 c 0
+278 331 m 0
+ 312 335 316 335 324 331 c 0
+ 333 326 337 316 338 294 c 0
+ 340 269 336 263 316 257 c 0
+ 296 251 263 248 185 244 c 0
+ 149 242 74 235 47 239 c 0
+ 26 242 21 249 19 276 c 0
+ 18 292 17 295 21 301 c 0
+ 25 308 26 309 37 310 c 0
+ 61 312 72 317 105 319 c 0
+ 139 321 162 325 192 325 c 0
+ 207 325 234 326 278 331 c 0
 EndSplineSet
-Comment: "char_L8_P16_x4812_y4544_x4991_y4593_4oCQ.svg"
+Comment: "char_L8_P16_x4812_y4544_x4991_y4593_LQ+AD0APQAA.svg"
 EndChar
 
 StartChar: parenleft
@@ -6629,8 +6629,8 @@ EndSplineSet
 Comment: "char_L8_P19_x5677_y4390_x5813_y4762_Ww+AD0APQAA.svg"
 EndChar
 
-StartChar: hyphen
-Encoding: 45 45 95
+StartChar: minus
+Encoding: 8722 8722 95
 Width: 482
 VWidth: 446
 Flags: HW
@@ -6652,7 +6652,7 @@ SplineSet
  56 306 81 309 119 310 c 0
  205 312 234 314 250 316 c 0
 EndSplineSet
-Comment: "char_L8_P1_x340_y4551_x549_y4600_LQ+AD0APQAA.svg"
+Comment: "char_L8_P1_x340_y4551_x549_y4600_4oiS.svg"
 EndChar
 
 StartChar: bracketright
@@ -9055,20 +9055,20 @@ Flags: HW
 LayerCount: 2
 Fore
 SplineSet
-109 754 m 0
- 114 757 120 759 123 759 c 0
- 127 759 158 740 163 734 c 0
- 164 733 165 729 165 725 c 0
- 166 712 163 700 155 689 c 0
- 139 667 128 635 114 605 c 0
- 104 582 99 571 97 559 c 0
- 95 543 95 543 88 540 c 0
- 81 537 78 537 62 539 c 0
- 41 542 31 546 28 553 c 0
- 27 555 25 557 24 557 c 0
- 22 557 20 568 20 577 c 0
- 21 592 36 629 64 686 c 0
- 86 732 96 747 109 754 c 0
+75 543 m 0
+ 70 540 65 538 62 538 c 0
+ 58 538 27 557 22 563 c 0
+ 21 564 20 568 20 572 c 0
+ 19 585 22 596 30 607 c 0
+ 46 629 57 661 71 691 c 0
+ 81 714 86 725 88 737 c 0
+ 90 753 90 753 97 756 c 0
+ 104 759 107 759 123 757 c 0
+ 144 754 154 751 157 744 c 0
+ 158 742 160 740 161 740 c 0
+ 163 740 165 728 165 719 c 0
+ 164 704 149 667 121 610 c 0
+ 99 564 88 550 75 543 c 0
 EndSplineSet
 Comment: "char_L9_P28_x9238_y5247_x9313_y5359_4oCZ.svg"
 EndChar
@@ -9081,25 +9081,25 @@ Flags: HW
 LayerCount: 2
 Fore
 SplineSet
-38 747 m 0
- 43 750 45 750 71 743 c 0
- 97 736 109 727 114 710 c 0
- 117 701 122 692 128 687 c 0
- 132 684 145 648 146 638 c 0
- 146 635 149 623 152 611 c 0
- 159 584 163 548 162 534 c 0
- 160 510 160 510 147 499 c 0
- 145 497 136 496 122 496 c 0
- 101 496 100 496 93 502 c 0
- 80 512 81 514 79 542 c 0
- 77 591 63 643 48 659 c 0
- 39 669 37 673 38 674 c 0
- 39 675 38 675 37 675 c 0
- 36 675 34 676 34 677 c 0
- 34 678 32 681 30 682 c 0
- 28 683 25 688 23 692 c 0
- 19 699 19 699 24 717 c 0
- 30 738 31 743 38 747 c 0
+144 498 m 0
+ 139 495 138 495 112 502 c 0
+ 86 509 73 518 68 535 c 0
+ 65 544 61 554 55 559 c 0
+ 51 562 37 597 36 607 c 0
+ 36 610 33 622 30 634 c 0
+ 23 661 19 697 20 711 c 0
+ 22 735 23 735 36 746 c 0
+ 38 748 46 749 60 749 c 0
+ 81 749 82 749 89 743 c 0
+ 102 733 101 732 103 704 c 0
+ 105 655 119 602 134 586 c 0
+ 143 576 146 573 145 572 c 0
+ 144 571 145 571 146 571 c 0
+ 147 571 148 569 148 568 c 0
+ 148 567 150 564 152 563 c 0
+ 154 562 158 557 160 553 c 0
+ 164 546 164 546 159 528 c 0
+ 153 507 151 502 144 498 c 0
 EndSplineSet
 Comment: "char_L9_P29_x9594_y5252_x9667_y5380_4oCY.svg"
 EndChar
@@ -9175,8 +9175,33 @@ EndSplineSet
 Comment: "char_L9_P2_x802_y5327_x1016_y5641_Mw+AD0APQAA.svg"
 EndChar
 
+StartChar: minute
+Encoding: 8242 8242 134
+Width: 176
+VWidth: 770
+Flags: HW
+LayerCount: 2
+Fore
+SplineSet
+87 712 m 0
+ 95 715 97 715 115 707 c 0
+ 128 701 132 698 134 694 c 0
+ 137 687 136 667 133 658 c 0
+ 131 654 130 649 130 645 c 0
+ 130 630 114 590 111 580 c 0
+ 107 569 86 527 82 524 c 0
+ 79 522 64 521 50 524 c 0
+ 41 526 23 539 21 546 c 0
+ 15 568 31 598 37 617 c 0
+ 43 636 47 641 52 660 c 0
+ 56 676 60 679 66 692 c 0
+ 70 701 77 708 87 712 c 0
+EndSplineSet
+Comment: "char_L9_P33_x10464_y5270_x10523_y5367_4oCy.svg"
+EndChar
+
 StartChar: quotesingle
-Encoding: 39 39 134
+Encoding: 39 39 135
 Width: 148
 VWidth: 781
 Flags: HW
@@ -9203,7 +9228,7 @@ Comment: "char_L9_P35_x11053_y5274_x11099_y5401_Jw+AD0APQAA.svg"
 EndChar
 
 StartChar: quotedbl
-Encoding: 34 34 135
+Encoding: 34 34 136
 Width: 262
 VWidth: 780
 Flags: HW
@@ -9242,7 +9267,7 @@ Comment: "char_L9_P36_x11326_y5274_x11429_y5399_Ig+AD0APQAA.svg"
 EndChar
 
 StartChar: four
-Encoding: 52 52 136
+Encoding: 52 52 137
 Width: 449
 VWidth: 775
 Flags: HW
@@ -9296,7 +9321,7 @@ Comment: "char_L9_P3_x1121_y5331_x1319_y5641_NA+AD0APQAA.svg"
 EndChar
 
 StartChar: five
-Encoding: 53 53 137
+Encoding: 53 53 138
 Width: 522
 VWidth: 800
 Flags: HW
@@ -9372,7 +9397,7 @@ Comment: "char_L9_P4_x1428_y5321_x1663_y5638_NQ+AD0APQAA.svg"
 EndChar
 
 StartChar: six
-Encoding: 54 54 138
+Encoding: 54 54 139
 Width: 460
 VWidth: 804
 Flags: HW
@@ -9430,7 +9455,7 @@ Comment: "char_L9_P5_x1764_y5322_x1968_y5646_Ng+AD0APQAA.svg"
 EndChar
 
 StartChar: seven
-Encoding: 55 55 139
+Encoding: 55 55 140
 Width: 441
 VWidth: 783
 Flags: HW
@@ -9482,7 +9507,7 @@ Comment: "char_L9_P6_x2073_y5331_x2267_y5651_Nw+AD0APQAA.svg"
 EndChar
 
 StartChar: eight
-Encoding: 56 56 140
+Encoding: 56 56 141
 Width: 421
 VWidth: 787
 Flags: HW
@@ -9558,7 +9583,7 @@ Comment: "char_L9_P7_x2342_y5327_x2525_y5640_OA+AD0APQAA.svg"
 EndChar
 
 StartChar: nine
-Encoding: 57 57 141
+Encoding: 57 57 142
 Width: 444
 VWidth: 811
 Flags: HW
@@ -9621,7 +9646,7 @@ Comment: "char_L9_P8_x2600_y5318_x2795_y5643_OQ+AD0APQAA.svg"
 EndChar
 
 StartChar: zero
-Encoding: 48 48 142
+Encoding: 48 48 143
 Width: 483
 VWidth: 774
 Flags: HW
@@ -9689,7 +9714,7 @@ Comment: "char_L9_P9_x2891_y5329_x3106_y5627_MA+AD0APQAA.svg"
 EndChar
 
 StartChar: bar
-Encoding: 124 124 143
+Encoding: 124 124 144
 Width: 156
 VWidth: 850
 Flags: HW
@@ -9714,8 +9739,32 @@ EndSplineSet
 Comment: "char_L4_P8_x2852_y2634_x2905_y2934_SQ+AD0APQAA.svg"
 EndChar
 
+StartChar: uni2010
+Encoding: 8208 8208 145
+Width: 373
+VWidth: 370
+Flags: HW
+LayerCount: 2
+Fore
+SplineSet
+278 261 m 0
+ 312 265 316 265 324 261 c 0
+ 333 256 337 246 338 224 c 0
+ 340 199 336 193 316 187 c 0
+ 296 181 263 178 185 174 c 0
+ 149 172 74 165 47 169 c 0
+ 26 172 21 179 19 206 c 0
+ 18 222 17 225 21 231 c 0
+ 25 238 26 239 37 240 c 0
+ 61 242 72 247 105 249 c 0
+ 139 251 162 255 192 255 c 0
+ 207 255 234 256 278 261 c 0
+EndSplineSet
+Comment: "char_L8_P16_x4812_y4544_x4991_y4593_LQ+AD0APQAA.svg"
+EndChar
+
 StartChar: space
-Encoding: 32 32 144
+Encoding: 32 32 146
 Width: 256
 Flags: HW
 LayerCount: 2

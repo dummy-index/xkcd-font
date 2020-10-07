@@ -206,6 +206,13 @@ def weight_glyph(c, stroke_width):
     c.transform(t)
 
 
+def rotate_glyph(c):
+    import_bbox = c.boundingBox()
+    
+    t = psMat.translate(-(import_bbox[0] + import_bbox[2]) / 2, -(import_bbox[1] + import_bbox[3]) / 2)
+    c.transform(psMat.compose(psMat.compose(t, psMat.scale(-1)), psMat.inverse(t)))
+
+
 def charname(char):
     # Give the fontforge name for the given character.
     return fontforge.nameFromUnicode(ord(char))
@@ -264,6 +271,8 @@ special_choices = {('C', ): dict(line=4),
 for line, position, bbox, fname, chars in characters:
     if chars == (u'I',) and line == 4:
         characters.append([4, None, bbox, fname, ('|',)])
+    if chars == (u'-',):
+        characters.append([line, None, bbox, fname, (u'‐',)])
 
 for line, position, bbox, fname, chars in characters:
     if chars in special_choices:
@@ -292,6 +301,12 @@ for line, position, bbox, fname, chars in characters:
         weight_glyph(c, 10)
     if chars == ('|',):
         c.transform(psMat.compose(psMat.scale(1, 1.3), psMat.translate(0, -100)))
+    if chars == ('-',) or chars == ('‐',):
+        c.transform(psMat.scale(0.9, 1.0))
+    if chars == ('‐',):
+        c.transform(psMat.translate(0, -70))
+    if chars == ('’',) or chars == ('‘',):
+        rotate_glyph(c)
 
     # Simplify, then put the vertices on rounded coordinate positions.
     c.simplify()
