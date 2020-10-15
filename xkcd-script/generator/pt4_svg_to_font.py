@@ -6,6 +6,25 @@ import glob
 import parse
 import base64
 
+def len_ucs(ustr):
+    len(ustr.encode('utf-32')) // 4
+
+
+def array_ucs(ustr):
+    work = []
+    for uch in ustr:
+        n = ord(uch)
+        if n >= 0xDC00 and n <= 0xDFFF:
+            p = ord(work[-1])
+            if p >= 0xD800 and p <= 0xDBFF:
+                work[-1] = (((p & 0x03FF) << 10) | (n & 0x03FF)) + 0x10000
+            else:
+                raise Exception("surrogate nonpair")
+        else:
+            work.append(uch)
+    return work
+
+
 fnames = sorted(glob.glob('../generated/characters/char_*.svg'))
 
 characters = []
@@ -14,7 +33,7 @@ for fname in fnames:
     
     pattern = 'char_L{line:d}_P{position:d}_x{x0:d}_y{y0:d}_x{x1:d}_y{y1:d}_{b64_str}.svg'
     result = parse.parse(pattern, os.path.basename(fname))
-    chars = tuple(base64.b64decode(result['b64_str'].encode()).decode('utf-8'))
+    chars = tuple(array_ucs(base64.b64decode(result['b64_str'].encode()).decode('utf-8')))
     bbox = (result['x0'], result['y0'], result['x1'], result['y1'])
     characters.append([result['line'], result['position'], bbox, fname, chars])
 
@@ -51,6 +70,7 @@ from contextlib import contextmanager
 import tempfile
 import shutil
 import os
+import sys
 
 
 @contextmanager
@@ -64,7 +84,10 @@ def tmp_symlink(fname):
     fname = os.path.normpath(os.path.abspath(fname))
     try:
         if os.name == 'nt':
-            os.link(fname, target)
+            if sys.version_info.major == 2:
+                shutil.copy(fname, target)
+            else:
+                os.link(fname, target)
         else:
             os.symlink(fname, target)
         yield target
@@ -120,10 +143,9 @@ for line, position, bbox, fname, chars in characters:
             this_line.setdefault('cap-height', []).append(bbox[1])
 
 
-try:
-    import statistics as np
-except ImportError:
-    import numpy as np
+def mean(a):
+    return sum(a) / len(a)
+
 import psMat
 
 def scale_glyph(c, char_bbox, baseline, cap_height):
@@ -269,9 +291,9 @@ special_choices = {('C', ): dict(line=4),
 
 # Special case - add a vertial pipe by re-using an I, and stretching it a bit.
 for line, position, bbox, fname, chars in characters:
-    if chars == (u'I',) and line == 4:
+    if chars == ('I',) and line == 4:
         characters.append([4, None, bbox, fname, ('|',)])
-    if chars == (u'-',):
+    if chars == ('-',):
         characters.append([line, None, bbox, fname, (u'‐',)])
 
 for line, position, bbox, fname, chars in characters:
@@ -289,23 +311,23 @@ for line, position, bbox, fname, chars in characters:
 
     scale_glyph(
         c, bbox,
-        baseline=np.mean(line_features['baseline']),
-        cap_height=np.mean(line_features['cap-height']))
+        baseline=mean(line_features['baseline']),
+        cap_height=mean(line_features['cap-height']))
     
     translate_glyph(
         c, bbox,
-        baseline=np.mean(line_features['baseline']),
-        cap_height=np.mean(line_features['cap-height']))
+        baseline=mean(line_features['baseline']),
+        cap_height=mean(line_features['cap-height']))
     
     if line == 0:
         weight_glyph(c, 10)
     if chars == ('|',):
         c.transform(psMat.compose(psMat.scale(1, 1.3), psMat.translate(0, -100)))
-    if chars == ('-',) or chars == ('‐',):
+    if chars == ('-',) or chars == (u'‐',):
         c.transform(psMat.scale(0.9, 1.0))
-    if chars == ('‐',):
+    if chars == (u'‐',):
         c.transform(psMat.translate(0, -70))
-    if chars == ('’',) or chars == ('‘',):
+    if chars == (u'’',) or chars == (u'‘',):
         rotate_glyph(c)
 
     # Simplify, then put the vertices on rounded coordinate positions.
