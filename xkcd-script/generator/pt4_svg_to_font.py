@@ -4,6 +4,22 @@ import fontforge
 import os
 import glob
 import parse
+import base64
+
+def array_ucs(ustr):
+    work = []
+    for uch in ustr:
+        n = ord(uch)
+        if n >= 0xDC00 and n <= 0xDFFF:
+            p = ord(work[-1])
+            if p >= 0xD800 and p <= 0xDBFF:
+                work[-1] = (((p & 0x03FF) << 10) | (n & 0x03FF)) + 0x10000
+            else:
+                raise Exception("surrogate nonpair")
+        else:
+            work.append(uch)
+    return work
+
 
 fnames = sorted(glob.glob('../generated/characters/char_*.svg'))
 
@@ -13,7 +29,7 @@ for fname in fnames:
     
     pattern = 'char_L{line:d}_P{position:d}_x{x0:d}_y{y0:d}_x{x1:d}_y{y1:d}_{b64_str}.svg'
     result = parse.parse(pattern, os.path.basename(fname))
-    chars = tuple(result['b64_str'].decode('base64').decode('utf-8'))
+    chars = tuple(array_ucs(base64.b64decode(result['b64_str'].encode()).decode('utf-8')))
     bbox = (result['x0'], result['y0'], result['x1'], result['y1'])
     characters.append([result['line'], result['position'], bbox, fname, chars])
 
@@ -37,9 +53,9 @@ def basic_font():
     font.descent = 256;
 
     # We create a ligature lookup table.
-    font.addLookup('ligatures', 'gsub_ligature', (), [[b'liga',
-                                                       [[b'latn',
-                                                         [b'dflt']]]]])
+    font.addLookup('ligatures', 'gsub_ligature', (), [['liga',
+                                                       [['latn',
+                                                         ['dflt']]]]])
     font.addLookupSubtable('ligatures', 'liga')
    
     return font
@@ -50,6 +66,7 @@ from contextlib import contextmanager
 import tempfile
 import shutil
 import os
+import sys
 
 
 @contextmanager
@@ -62,7 +79,13 @@ def tmp_symlink(fname):
     target = tempfile.mktemp(suffix=os.path.splitext(fname)[1])
     fname = os.path.normpath(os.path.abspath(fname))
     try:
-        os.symlink(fname, target)
+        if os.name == 'nt':
+            if sys.version_info.major == 2:
+                shutil.copy(fname, target)
+            else:
+                os.link(fname, target)
+        else:
+            os.symlink(fname, target)
         yield target
     finally:
         if os.path.exists(target):
@@ -116,18 +139,18 @@ for line, position, bbox, fname, chars in characters:
             this_line.setdefault('cap-height', []).append(bbox[1])
 
 
-import numpy as np
+def mean(a):
+    return sum(a) / len(a)
+
 import psMat
 
-def scale_glyph(char, char_bbox, baseline, cap_height):
+def scale_glyph(c, char_bbox, baseline, cap_height):
     # TODO: The code in this function is convoluted - it can be hugely simplified.
     # Essentially, all this function does is figure out how much
     # space a normal glyph takes, then looks at how much space *this* glyph takes.
     # With that magic ratio in hand, I now look at how much space the glyph *currently*
     # takes, and scale it to the full EM. On second thoughts, this function really does
     # need to be convoluted, so maybe the code isn't *that* bad...
-    
-    font = char.font
     
     # Get hold of the bounding box information for the imported glyph.
     import_bbox = c.boundingBox()
@@ -136,8 +159,8 @@ def scale_glyph(char, char_bbox, baseline, cap_height):
     # Note that timportOutlines doesn't guarantee glyphs will be put in any particular location,
     # so translate to the bottom and middle.
     
-    target_baseline = char.font.descent
-    top = char.font.ascent
+    target_baseline = c.font.descent
+    top = c.font.ascent
     top_ratio = top / (top + target_baseline)
     
     y_base_delta_baseline = char_bbox[3] - baseline
@@ -151,15 +174,15 @@ def scale_glyph(char, char_bbox, baseline, cap_height):
     # A nice glyph size, in pixels. NOTE: In pixel space, cap_height is smaller than baseline, so make it positive.
     full_glyph_size = -(cap_height - baseline) / top_ratio
     
-    to_canvas_coord_from_px = full_glyph_size / font.em
+    to_canvas_coord_from_px = full_glyph_size / c.font.em
     
     anchor_ratio = (top + target_baseline) / height
     
     # pixel scale factor
-    px_sf = (top + target_baseline) / font.em
+    px_sf = (top + target_baseline) / c.font.em
     
     frac_of_full_size = (height / full_glyph_size)
-    import_frac_1000 = font.em / import_height
+    import_frac_1000 = c.font.em / import_height
     
     t = psMat.scale(frac_of_full_size * import_frac_1000)
     c.transform(t)
@@ -214,7 +237,7 @@ def autokern(font):
     all_chars = caps + lower
 
     # Add a kerning lookup table.
-    font.addLookup('kerning', 'gpos_pair', (), [[b'kern', [[b'latn', [b'dflt']]]]])
+    font.addLookup('kerning', 'gpos_pair', (), [['kern', [['latn', ['dflt']]]]])
     font.addLookupSubtable('kerning', 'kern')
     
     # Everyone knows that two slashes together need kerning... (even if they didn't realise it)
@@ -243,7 +266,7 @@ special_choices = {('C', ): dict(line=4),
 
 # Special case - add a vertial pipe by re-using an I, and stretching it a bit.
 for line, position, bbox, fname, chars in characters:
-    if chars == (u'I',) and line == 4:
+    if chars == ('I',) and line == 4:
         characters.append([4, None, bbox, fname, ('|',)])
 
 for line, position, bbox, fname, chars in characters:
@@ -260,13 +283,13 @@ for line, position, bbox, fname, chars in characters:
 
     scale_glyph(
         c, bbox,
-        baseline=np.mean(line_features['baseline']),
-        cap_height=np.mean(line_features['cap-height']))
+        baseline=mean(line_features['baseline']),
+        cap_height=mean(line_features['cap-height']))
     
     translate_glyph(
         c, bbox,
-        baseline=np.mean(line_features['baseline']),
-        cap_height=np.mean(line_features['cap-height']))
+        baseline=mean(line_features['baseline']),
+        cap_height=mean(line_features['cap-height']))
 
     # Simplify, then put the vertices on rounded coordinate positions.
     c.simplify()
@@ -284,3 +307,4 @@ if os.path.exists(font_fname):
     os.remove(font_fname)
 font.generate(font_fname)
 
+font.close()
