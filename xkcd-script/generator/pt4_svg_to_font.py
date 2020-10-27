@@ -223,6 +223,7 @@ def translate_glyph(c, char_bbox, cap_height, baseline):
 def weight_glyph(c, stroke_width):
     # Dilate the glyph with bottom keeping.
 
+    c.simplify(0.5, ['smoothcurves'])
     c.changeWeight(stroke_width, 'CJK')
     t = psMat.translate(0, stroke_width / 2)
     c.transform(t)
