@@ -192,6 +192,9 @@ def scale_glyph(c, char_bbox, baseline, cap_height):
     c.transform(t)
 
 
+large_arm_chars = ['C', 'F', 'J', 'T', 'T_T', 'f', 'r', 'five']
+large_tail_chars = ['g', 'j']
+
 def translate_glyph(c, char_bbox, cap_height, baseline):
     # Put the glyph in the middle, and move it relative to the baseline.
 
@@ -215,8 +218,14 @@ def translate_glyph(c, char_bbox, cap_height, baseline):
     # and calculating how much space there should be).
     space = 20
     scaled_width = glyph_bbox[2] - glyph_bbox[0] 
-    c.width = scaled_width + 2 * space
-    t = psMat.translate(space, 0)
+    if c.glyphname in large_arm_chars:
+        c.width = scaled_width
+    else:
+        c.width = scaled_width + 2 * space
+    if c.glyphname in large_tail_chars:
+        t = psMat.translate(-space, 0)
+    else:
+        t = psMat.translate(space, 0)
     c.transform(t)
 
 
@@ -248,34 +257,64 @@ def autokern(font):
                   if not glyph.glyphname.startswith(' ')]    
 
     #print('\n'.join(sorted(all_glyphs)))
-    ligatures = [name for name in all_glyphs if '_' in name]
+    ligatures = [name for name in all_glyphs if len(name) < 8 and '_' in name]
     upper_ligatures = [ligature for ligature in ligatures if ligature.upper() == ligature]
     lower_ligatures = [ligature for ligature in ligatures if ligature.lower() == ligature]
     
     caps = list('ABCDEFGHIJKLMNOPQRSTUVWXYZ') + upper_ligatures
     lower = list('abcdefghijklmnopqrstuvwxyz') + lower_ligatures
     all_chars = caps + lower
+    
+    lvbar = list('BDEFHIKLMNPRbhklmnr')
+    lvbar = lvbar + [name for name in ligatures if name[0] in lvbar]
+    lbowl = list('ACGOQUacdeoqu')
+    lbowl = lbowl + [name for name in ligatures if name[0] in lbowl]
+    lcmplx = list('JSTVWXYZfgijpstvwxyz')
+    lcmplx = lcmplx + [name for name in ligatures if name[0] in lcmplx]
+    rvbar = list('HIMNdhlmn')
+    rvbar = rvbar + [name for name in ligatures if name[-1] in rvbar]
+    rbowl = list('ABDOSUbopsu')
+    rbowl = rbowl + [name for name in ligatures if name[-1] in rbowl]
+    rcmplx = list('CEFGJKLPQRTVWXYZacefgijkqrtvwxyz')
+    rcmplx = rcmplx + [name for name in ligatures if name[-1] in rcmplx]
+    
+    t = psMat.translate(0, -30)
+    font.__getitem__('T').transform(t)
+    font.__getitem__('T_T').transform(t)
 
     # Add a kerning lookup table.
     font.addLookup('kerning', 'gpos_pair', (), [['kern', [['latn', ['dflt']]]]])
+    
+    font.addKerningClass('kerning', 'kern0', [rvbar, rbowl, rcmplx], [[], lvbar, lbowl, lcmplx], [0, 0, -20, -30, 0, -20, -20, -30, 0, -30, -30, -30])
     font.addLookupSubtable('kerning', 'kern')
     
     # Everyone knows that two slashes together need kerning... (even if they didn't realise it)
     font.autoKern('kern', 150, [charname('/'), charname('\\')], [charname('/'), charname('\\')])
 
-    # Should be ascending order in 'separation.'
-    font.autoKern('kern', 30, ['C'], all_chars)
-    font.autoKern('kern', 60, ['r'], lower, minKern=50)
-    font.autoKern('kern', 60, lower, ['g'], minKern=50)
+    # ascending order in 'separation.'
+    font.autoKern('kern', 30, ['C'], all_chars, minKern=30)
+    font.autoKern('kern', 30, all_chars, ['f', 't', 't_t'], minKern=30, touch=True)
+    font.autoKern('kern', 60, ['r'], lower, minKern=30, onlyCloser=True)
+    font.autoKern('kern', 60, ['r_r'], lower, onlyCloser=True, touch=True)
+    font.autoKern('kern', 80, all_chars, ['g'], minKern=30)
     font.autoKern('kern', 80, ['s'], lower, minKern=30)
-    font.autoKern('kern', 100, ['f'], lower, minKern=50)
-    font.autoKern('kern', 150, ['T', 'F', 'J', 'T_T'], all_chars, onlyCloser=True)
-    font.autoKern('kern', 180, all_chars, ['j'], minKern=35)
+    font.autoKern('kern', 100, ['V'], all_chars, minKern=30, onlyCloser=True)
+    font.autoKern('kern', 120, all_chars, ['T', 'T_O', 'T_T'], minKern=30, onlyCloser=True)
+    font.autoKern('kern', 120, ['Y'], all_chars, minKern=30, onlyCloser=True)
+    font.autoKern('kern', 120, ['f'], lower, minKern=30, onlyCloser=True)
+    font.autoKern('kern', 130, ['J'], all_chars, minKern=30, onlyCloser=True)
+    font.autoKern('kern', 150, ['T', 'F'], all_chars, minKern=30, onlyCloser=True)
+    font.autoKern('kern', 180, all_chars, ['j'], minKern=30, onlyCloser=True)
+    font.autoKern('kern', 200, ['T_T'], all_chars, minKern=30, onlyCloser=True)
     
-    # onlyCloser=True gives more stable results.
-    font.autoKern('kern', 60, ['r_r'], lower, touch=True, onlyCloser=True)
-    font.autoKern('kern', 30, ['C'], ['f', 't'], touch=True)
-    font.autoKern('kern', 60, ['C'], ['V', 'v'], touch=True)
+    font.autoKern('kern', 70, ['a'], ['t', 't_t'], minKern=30, touch=True)
+    font.autoKern('kern', 60, ['C'], ['V', 'v'], minKern=30, touch=True)
+    font.autoKern('kern', 0, ['T_T'], ['T_T', 'T'], minKern=30, touch=True)
+    font.__getitem__(charname('1')).addPosSub('kern', charname('1'), 160)
+    
+    t = psMat.translate(0, 30)
+    font.__getitem__('T').transform(t)
+    font.__getitem__('T_T').transform(t)
 
 
 font = basic_font()
