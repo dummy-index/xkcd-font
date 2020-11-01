@@ -88,16 +88,16 @@ def merge(img1, img1_bbox, img2, img2_bbox):
 characters_by_line = []
 
 for line_no, (character_line, glyph_line) in enumerate(zip(paragraphs, glyphs_by_line)):
-    glyph_iter = iter(glyph_line)
+    glyph_iter = iter(enumerate(glyph_line))
     characters_this_line = []
     characters_by_line.append(characters_this_line)
 
-    for char_no, character in enumerate(character_line):
-        bbox, img = next(glyph_iter)
+    for character in character_line:
+        char_no, (bbox, img) = next(glyph_iter)
         if character in glyphs_needing_two_strokes:
-            other_bbox, other_img = next(glyph_iter)
+            _, (other_bbox, other_img) = next(glyph_iter)
             img, bbox = merge(img, bbox, other_img, other_bbox)
-        characters_this_line.append([character, bbox, img])
+        characters_this_line.append([char_no, character, bbox, img])
 
 
 
@@ -109,7 +109,7 @@ if not os.path.isdir('../generated/characters'):
 replacements = {'/': 'forward-slash', '_': 'underscore'}
 
 for line_no, line in enumerate(characters_by_line):
-    for char_no, (char, bbox, img) in enumerate(line):
+    for char_no, char, bbox, img in line:
         char_repr = '-'.join(replacements.get(c, c) for c in char)
         hex_repr = '-'.join(str(hex(ord(c))) for c in char)
         b64_repr = base64.b64encode(char.encode('utf-8')).decode('utf-8')
