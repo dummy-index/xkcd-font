@@ -3,6 +3,7 @@
 import glob
 import os
 import base64
+import sys
 
 import matplotlib
 matplotlib.use('agg')
@@ -112,7 +113,10 @@ for line_no, line in enumerate(characters_by_line):
     for char_no, (char, bbox, img) in enumerate(line):
         char_repr = '-'.join(replacements.get(c, c) for c in char)
         hex_repr = '-'.join(str(hex(ord(c))) for c in char)
-        b64_repr = base64.b64encode(char.encode('utf-8')).decode('utf-8')
+        try:
+            b64_repr = char.encode('base64')
+        except LookupError:
+            b64_repr = base64.b64encode(char.encode('utf-8')).decode('utf-8')
 
         fname = ('char_L{}_P{}_x{}_y{}_x{}_y{}_{b64_repr}.ppm'
                  ''.format(line_no, char_no, *bbox, b64_repr=b64_repr))

@@ -29,7 +29,10 @@ for fname in fnames:
     
     pattern = 'char_L{line:d}_P{position:d}_x{x0:d}_y{y0:d}_x{x1:d}_y{y1:d}_{b64_str}.svg'
     result = parse.parse(pattern, os.path.basename(fname))
-    chars = tuple(array_ucs(base64.b64decode(result['b64_str'].encode()).decode('utf-8')))
+    try:
+        chars = tuple(array_ucs(result['b64_str'].decode('base64').decode('utf-8')))
+    except AttributeError:
+        chars = tuple(array_ucs(base64.b64decode(result['b64_str'].encode()).decode('utf-8')))
     bbox = (result['x0'], result['y0'], result['x1'], result['y1'])
     characters.append([result['line'], result['position'], bbox, fname, chars])
 
