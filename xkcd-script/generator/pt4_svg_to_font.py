@@ -61,7 +61,13 @@ def basic_font():
                                                        [['latn',
                                                          ['dflt']]]]])
     font.addLookupSubtable('ligatures', 'liga')
-   
+
+    font.addLookup('anchors', 'gpos_mark2base', (), [['mark',
+                                                      [['latn',
+                                                        ['dflt']]]]])
+    font.addLookupSubtable('anchors', 'dtop')
+    font.addAnchorClass('dtop', 'top')
+
     return font
 
 
@@ -130,7 +136,7 @@ def create_char(font, chars, fname):
 
 
 baseline_chars = ['a' 'e', 'm', 'A', 'E', 'M', '&', '@', '.', u'≪', u'É']
-caps_chars = ['S', 'T', 'J', 'k', 't', 'l', 'b', 'd', '1', '2', u'3', u'≪', '?', '!']
+caps_chars = ['S', 'T', 'J', 'k', 't', 'l', 'b', 'd', '1', '2', u'3', u'≪', u'‽', '?', '!']
 
 line_stats = {}
 for line, position, bbox, fname, chars in characters:
@@ -246,6 +252,30 @@ def rotate_glyph(c):
     c.transform(psMat.compose(psMat.compose(t, psMat.scale(-1)), psMat.inverse(t)))
 
 
+def addanchor(font, char):
+    c = font.__getitem__(char)
+    xmin, _, xmax, ymax = c.boundingBox()
+    c.addAnchorPoint('top', 'base', (xmin + xmax) / 2, ymax)
+
+
+def getaccent(cfrom, cto):
+    cto.width = cfrom.width
+    lfrom = cfrom.foreground
+    lto = cto.foreground
+    xmin, _, xmax, _ = cfrom.boundingBox()
+    ytop = 0
+    i = 0
+    while i < len(lfrom):
+        _, _, _, ymax = lfrom[i].boundingBox()
+        if ymax >= 540:
+            lto += lfrom[i]
+        else:
+            if ymax > ytop:
+                ytop = ymax
+        i = i + 1
+    cto.layers[1] = lto
+    cto.addAnchorPoint('top', 'mark', (xmin + xmax) / 2, ytop)
+
 def charname(char):
     # Give the fontforge name for the given character.
     return fontforge.nameFromUnicode(ord(char))
@@ -340,6 +370,10 @@ for line, position, bbox, fname, chars in characters:
         characters.append([4, None, bbox, fname, ('|',)])
     if chars == ('-',):
         characters.append([line, None, bbox, fname, (u'‐',)])
+    if chars == ('!',):
+        characters.append([line, None, bbox, fname, (u'¡',)])
+    if chars == ('?',):
+        characters.append([line, None, bbox, fname, (u'¿',)])
 
 for line, position, bbox, fname, chars in characters:
     if chars in special_choices:
@@ -374,6 +408,9 @@ for line, position, bbox, fname, chars in characters:
         c.transform(psMat.translate(0, -70))
     if chars == (u'’',) or chars == (u'‘',):
         rotate_glyph(c)
+    if chars == (u'¿',) or chars == (u'¡',):
+        rotate_glyph(c)
+        c.transform(psMat.translate(0, -120))
 
     # Simplify, then put the vertices on rounded coordinate positions.
     c.simplify()
@@ -381,7 +418,15 @@ for line, position, bbox, fname, chars in characters:
 
 c = font.createMappedChar(32)
 c.width = 256
-
+getaccent(font.createMappedChar('Ograve'), font.createMappedChar('grave'))
+c = font.createMappedChar(0x00C0)
+addanchor(font, 'A')
+addanchor(font, 'E')
+c.addReference('A')
+c.appendAccent('grave')
+c = font.createMappedChar(0x00C8)
+c.addReference('E')
+c.appendAccent('grave')
 autokern(font)
 font_fname = '../font/xkcd-script.sfd'
 
