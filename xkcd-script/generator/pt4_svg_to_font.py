@@ -62,18 +62,15 @@ def basic_font():
                                                          ['dflt']]]]])
     font.addLookupSubtable('ligatures', 'liga')
 
-    font.addLookup('decomposes', 'gsub_multiple', (), [['ccmp',
-                                                       [['latn',
-                                                         ['dflt']]]]])
-    font.addLookupSubtable('decomposes', 'dcmp')
-
     font.addLookup('anchors', 'gpos_mark2base', (), [['mark',
                                                       [['latn',
                                                         ['dflt']]]]])
     font.addLookupSubtable('anchors', 'dtop')
     font.addAnchorClass('dtop', 'top')
-    font.addLookupSubtable('anchors', 'dtopright')
-    font.addAnchorClass('dtopright', 'topright')
+    font.addLookupSubtable('anchors', 'dbottom')
+    font.addAnchorClass('dbottom', 'bottom')
+    font.addLookupSubtable('anchors', 'dupperright')
+    font.addAnchorClass('dupperright', 'upperright')
 
     return font
 
@@ -205,8 +202,9 @@ def scale_glyph(c, char_bbox, baseline, cap_height):
     c.transform(t)
 
 
-large_arm_chars = ['C', 'F', 'J', 'Q', 'T', 'T_T', 'f', 'r', 'five']
-large_tail_chars = ['g', 'j', 'y']
+large_arm_chars = ['C', 'F', 'J', 'Q', 'T', 'T_T', 'f', 'q', 'r', 'five']
+large_tail_chars = ['y', 'comma', 'semicolon']
+more_large_tail_chars = ['g', 'j']
 
 def translate_glyph(c, char_bbox, cap_height, baseline):
     # Put the glyph in the middle, and move it relative to the baseline.
@@ -230,13 +228,19 @@ def translate_glyph(c, char_bbox, cap_height, baseline):
     # there are far more sophisticated means of doing this (like looking at the original image,
     # and calculating how much space there should be).
     space = 20
-    scaled_width = glyph_bbox[2] - glyph_bbox[0] 
-    if c.glyphname in large_arm_chars:
+    scaled_width = glyph_bbox[2] - glyph_bbox[0]
+    if c.glyphname == 'one':
+        c.width = scaled_width + 4 * space
+    elif c.glyphname in large_arm_chars:
         c.width = scaled_width
     else:
         c.width = scaled_width + 2 * space
-    if c.glyphname in large_tail_chars:
+    if c.glyphname == 'one':
+        t = psMat.translate(3 * space, 0)
+    elif c.glyphname in large_tail_chars:
         t = psMat.translate(-space, 0)
+    elif c.glyphname in more_large_tail_chars:
+        t = psMat.translate(-3 * space, 0)
     else:
         t = psMat.translate(space, 0)
     c.transform(t)
@@ -264,12 +268,32 @@ def rotate_glyph(c, theta=180):
         c.transform(psMat.compose(psMat.compose(t, psMat.rotate(math.radians(theta))), psMat.inverse(t)))
 
 
+def rotate_and_onto_baseline(c, theta):
+    c.transform(psMat.rotate(math.radians(theta)))
+    _, ymin, _, ymax = c.boundingBox()
+    c.transform(psMat.translate(0, -ymin))
+    space = 20
+    c.left_side_bearing = space
+    c.right_side_bearing = 2 * space
+
+
 def addanchor(font, char):
     c = font.__getitem__(char)
-    xmin, _, xmax, ymax = c.boundingBox()
-    if xmin < 0:
-        xmin = 0
+    xmin, ymin, xmax, ymax = c.boundingBox()
+    if xmin < 20:
+        xmin = 20
+    if xmax > c.width - 40:
+        xmax = c.width - 40
+    if char == 'I':
+        ymax = 620
     c.addAnchorPoint('top', 'base', (xmin + xmax) / 2, ymax)
+    c.addAnchorPoint('bottom', 'base', (xmin + xmax) / 2, ymin)
+    if c.glyphname == 'L':
+        c.addAnchorPoint('upperright', 'base', xmax - 100, ymax)
+    elif c.glyphname == 't':
+        c.addAnchorPoint('upperright', 'base', xmax - 80, ymax)
+    else:
+        c.addAnchorPoint('upperright', 'base', xmax, ymax)
 
 
 def getaccent(font, src, glyph, comb, scale=1.0, anchorclass='top'):
@@ -294,16 +318,21 @@ def getaccent(font, src, glyph, comb, scale=1.0, anchorclass='top'):
     t = psMat.translate(-(xmin + xmax) / 2, -ytop)
     lto.transform(psMat.compose(psMat.compose(t, psMat.scale(scale)), psMat.inverse(t)))
     ccomb = font.createMappedChar(comb)
-    #ccomb.addReference(glyph)
-    ccomb.layers[1] = lto.dup()
-    if src == 'j' or src == 'Emacron':
+    ccomb.foreground = lto.dup()
+    if src == 'j' or src == 'Emacron' or src == 'Udieresis':
         xmin, _, xmax, _ = ccomb.boundingBox()
-    t = psMat.translate(-(xmin + xmax) / 2, 0)
+    space = 20
+    if anchorclass == 'upperright':
+        rspace = -2 * space
+        _, ymin, _, ymax = ccomb.boundingBox()
+        ccomb.addAnchorPoint(anchorclass, 'mark', xmin, ymax)
+    else:
+        rspace = 2 * space
+        ccomb.addAnchorPoint(anchorclass, 'mark', (xmin + xmax) / 2, ytop)
+    t = psMat.translate(-xmax - rspace, 0)
     ccomb.transform(t)
     ccomb.width = 0
-    ccomb.addAnchorPoint(anchorclass, 'mark', 0, ytop)
-    cglyph.layers[1] = lto
-    space = 20
+    cglyph.foreground = lto
     cglyph.left_side_bearing = space
     cglyph.right_side_bearing = 2 * space
 
@@ -313,7 +342,7 @@ def getbase(cfrom, cto, lowercase=False):
     lfrom = cfrom.foreground
     lto = cto.foreground
     xmin, _, xmax, _ = cfrom.boundingBox()
-    ytop = 0
+    ytop = 350
     i = 0
     while i < len(lfrom):
         _, ymin, _, ymax = lfrom[i].boundingBox()
@@ -325,8 +354,61 @@ def getbase(cfrom, cto, lowercase=False):
             if ymax > ytop:
                 ytop = ymax
         i = i + 1
-    cto.layers[1] = lto
+    cto.foreground = lto
     cto.addAnchorPoint('top', 'base', (xmin + xmax) / 2, ytop)
+
+
+def makecedilla(font):
+    c = font.createMappedChar('cedilla')
+    l1 = font.__getitem__('five').foreground.dup()
+    l2 = font.__getitem__('plus').foreground.dup()
+    l2.transform(psMat.translate(-18, 400))
+    l2.exclude(l1)
+    l3 = fontforge.layer()
+    i = 0
+    while i < len(l2):
+        _, ymin, _, ymax = l2[i].boundingBox()
+        if ymin < 500:
+            l3 += l2[i]
+        i = i + 1
+    c.foreground = l3
+    c.transform(psMat.translate(0, -560))
+    c.transform(psMat.scale(0.6, 0.35))
+    c.simplify(1.0)
+    c.changeWeight(10, 'CJK')
+    c.simplify(1.0)
+    c.changeWeight(10, 'CJK')
+    l3 = c.foreground.dup()
+    space = 20
+    c.left_side_bearing = space
+    c.right_side_bearing = 2 * space
+    c = font.createMappedChar('uni0327')
+    c.foreground = l3
+    c.transform(psMat.translate(-120, 0))
+    c.addAnchorPoint('bottom', 'mark', 0, 0)
+    c.width = 0
+
+
+def makecombslash(font):
+    c = font.createMappedChar('uni0337')
+    l1 = font.__getitem__('percent').foreground.dup()
+    l2 = fontforge.layer()
+    i = 0
+    while i < len(l1):
+        _, ymin, _, ymax = l1[i].boundingBox()
+        if ymax - ymin >= 300:
+            l2 += l1[i]
+        i = i + 1
+    c.foreground = l2
+    _, ymin, _, ymax = c.boundingBox()
+    c.transform(psMat.translate(0, -ymin))
+    space = 20
+    c.right_side_bearing = 1 * space
+    c.transform(psMat.translate(-c.width, 0))
+    c = font.createMappedChar('uni0338')
+    c.foreground = font.__getitem__('slash').foreground.dup()
+    rotate_and_onto_baseline(c, -10)
+    c.transform(psMat.translate(-c.width, 0))
 
 
 def makeaccented(font, charbase, characcent, charto):
@@ -335,21 +417,26 @@ def makeaccented(font, charbase, characcent, charto):
     c.width = font.__getitem__(charbase).width
     c.addReference(charbase)
     c.appendAccent(characcent)
-    if charbase == 'I' or charbase == 'dotlessi':
+    if charbase == 'dotlessi':
+        wadd = c.width
         space = 20
         c.left_side_bearing = space
         c.right_side_bearing = 2 * space
-    else:
-        c.addPosSub('dcmp', [charbase, characcent])
+        wadd = c.width - wadd
+        font.__getitem__(charbase).addPosSub('sacc', characcent, wadd // 2, 0, wadd, 0, 0, 0, 0, 0)
+    if characcent == 'uni0315' and (charto == 'dcaron' or charto == 'lcaron'):
+        c.width = c.width + 80
+        font.__getitem__(charbase).addPosSub('sacc', 'uni0315', 0, 0, 80, 0, 0, 0, 0, 0)
+    
 
 
-def makedigraph(font, chara, charb, charto):
+def makedigraph(font, chara, charb, charto, kerning=-120):
     c = font.createMappedChar(charto)
     
     # simulate pasteAppend
     c.width = font.__getitem__(chara).width
     c.addReference(chara)
-    pushwidth = c.width - 120
+    pushwidth = c.width + kerning
     c.transform(psMat.translate(-pushwidth, 0))
     c.addReference(charb)
     c.width = font.__getitem__(charb).width
@@ -362,25 +449,44 @@ def makeaccent(font):
     getaccent(font, 'Aring', 'degree', 'uni030A')
     getaccent(font, 'Eacute', 'acute', 'acutecomb')
     getaccent(font, 'Emacron', 'macron', 'uni0304')
+    font.__getitem__('asciicircum').transform(psMat.translate(0, 100))
     getaccent(font, 'asciicircum', 'circumflex', 'uni0302', scale=0.8)
     rotate_glyph(font.__getitem__('asciicircum'))
     getaccent(font, 'asciicircum', 'caron', 'uni030C', scale=0.8)
     rotate_glyph(font.__getitem__('asciicircum'))
-    font.__getitem__('asciitilde').transform(psMat.translate(0, 100))
+    font.__getitem__('asciicircum').transform(psMat.translate(0, -100))
+    font.__getitem__('asciitilde').transform(psMat.translate(0, 200))
     getaccent(font, 'asciitilde', 'tilde', 'tildecomb', scale=0.8)
-    font.__getitem__('asciitilde').transform(psMat.translate(0, -100))
+    font.__getitem__('asciitilde').transform(psMat.translate(0, -200))
     font.__getitem__('minute').transform(psMat.translate(0, -80))
-    getaccent(font, 'minute', 'uni02BC', 'uni0315', anchorclass='topright')
+    getaccent(font, 'minute', 'uni02BC', 'uni0315', anchorclass='upperright')
     font.__getitem__('minute').transform(psMat.translate(0, 80))
     getaccent(font, 'Ohungarumlaut', 'hungarumlaut', 'uni030B')
     getaccent(font, 'j', 'dotaccent', 'uni0307')
     
+    makecedilla(font)
+    makecombslash(font)
+    
     getbase(font.__getitem__('i'), font.createMappedChar('dotlessi'), lowercase=True)
-    getbase(font.__getitem__('j'), font.createMappedChar('dotlessj'), lowercase=True)
+    getbase(font.__getitem__('j'), font.createMappedChar('uni0237'), lowercase=True)
+    c = font.createMappedChar('longs')
+    c.foreground = font.__getitem__('uni0237').foreground.dup()
+    c.simplify(0.5, ['ignoreslopes', 'ignoreextrema', 'smoothcurves'])
+    rotate_and_onto_baseline(c, 175)
+    c = font.createMappedChar('IJ')
+    c.width = font.__getitem__('J').width
+    c.foreground = font.__getitem__('J').foreground.dup()
+    c.transform(psMat.translate(60, 0))
+    l = font.__getitem__('dotlessi').foreground.dup()
+    l.transform(psMat.compose(psMat.scale(1, 1.4), psMat.translate(-30, 160)))
+    c.foreground += l
     for i in range(ord('A'), ord('Z')+1):
         addanchor(font, i)
     for i in range(ord('a'), ord('z')+1):
         addanchor(font, i)
+    
+    font.addLookup('sideaccents', 'gpos_pair', (), [['mark', [['latn', ['dflt']]]]])
+    font.addLookupSubtable('sideaccents', 'sacc')
     
     #font.selection.select(('ranges', None), 0x00C0, 0x17E)
     #font.build()
@@ -390,6 +496,7 @@ def makeaccent(font):
     makeaccented(font, 'A', 'tildecomb', 'Atilde')  # U+00C3
     makeaccented(font, 'A', 'uni0308', 'Adieresis')  # U+00C4
     makedigraph(font, 'A', 'E', 'AE')  # U+00C6
+    makeaccented(font, 'C', 'uni0327', 'Ccedilla')  # U+00C7
     makeaccented(font, 'E', 'gravecomb', 'Egrave')  # U+00C8
     makeaccented(font, 'E', 'uni0302', 'Ecircumflex')  # U+00CA
     makeaccented(font, 'E', 'uni0308', 'Edieresis')  # U+00CB
@@ -402,17 +509,20 @@ def makeaccent(font):
     makeaccented(font, 'O', 'uni0302', 'Ocircumflex')  # U+00D4
     makeaccented(font, 'O', 'tildecomb', 'Otilde')  # U+00D5
     makeaccented(font, 'O', 'uni0308', 'Odieresis')  # U+00D6
+    makeaccented(font, 'O', 'uni0338', 'Oslash')  # U+00D8
     makeaccented(font, 'U', 'gravecomb', 'Ugrave')  # U+00D9
     makeaccented(font, 'U', 'acutecomb', 'Uacute')  # U+00DA
     makeaccented(font, 'U', 'uni0302', 'Ucircumflex')  # U+00DB
     makeaccented(font, 'Y', 'acutecomb', 'Yacute')  # U+00DD
+    makedigraph(font, 'longs', 's', 'germandbls', -180)  # U+00DF
     makeaccented(font, 'a', 'gravecomb', 'agrave')  # U+00E0
     makeaccented(font, 'a', 'acutecomb', 'aacute')  # U+00E1
     makeaccented(font, 'a', 'uni0302', 'acircumflex')  # U+00E2
     makeaccented(font, 'a', 'tildecomb', 'atilde')  # U+00E3
     makeaccented(font, 'a', 'uni0308', 'adieresis')  # U+00E4
     makeaccented(font, 'a', 'uni030A', 'aring')  # U+00E5
-    makedigraph(font, 'a', 'e', 'ae')  # U+00C6
+    makedigraph(font, 'a', 'e', 'ae')  # U+00E6
+    makeaccented(font, 'c', 'uni0327', 'ccedilla')  # U+00E7
     makeaccented(font, 'e', 'gravecomb', 'egrave')  # U+00E8
     makeaccented(font, 'e', 'acutecomb', 'eacute')  # U+00E9
     makeaccented(font, 'e', 'uni0302', 'ecircumflex')  # U+00EA
@@ -427,22 +537,32 @@ def makeaccent(font):
     makeaccented(font, 'o', 'uni0302', 'ocircumflex')  # U+00F4
     makeaccented(font, 'o', 'tildecomb', 'otilde')  # U+00F5
     makeaccented(font, 'o', 'uni0308', 'odieresis')  # U+00F6
+    makeaccented(font, 'o', 'uni0337', 'oslash')  # U+00F8
     makeaccented(font, 'u', 'gravecomb', 'ugrave')  # U+00F9
     makeaccented(font, 'u', 'acutecomb', 'uacute')  # U+00FA
     makeaccented(font, 'u', 'uni0302', 'ucircumflex')  # U+00FB
     makeaccented(font, 'u', 'uni0308', 'udieresis')  # U+00FC
     makeaccented(font, 'y', 'acutecomb', 'yacute')  # U+00FD
     makeaccented(font, 'y', 'uni0308', 'ydieresis')  # U+00FF
+    makeaccented(font, 'A', 'uni0304', 'Amacron')  # U+0100
+    makeaccented(font, 'a', 'uni0304', 'amacron')  # U+0101
     makeaccented(font, 'C', 'uni030C', 'Ccaron')  # U+010C
     makeaccented(font, 'c', 'uni030C', 'ccaron')  # U+010D
     makeaccented(font, 'D', 'uni030C', 'Dcaron')  # U+010E
-    makeaccented(font, 'd', 'uni02BC', 'dcaron')  # U+010F
+    makeaccented(font, 'd', 'uni0315', 'dcaron')  # U+010F
+    makeaccented(font, 'e', 'uni0304', 'emacron')  # U+0113
     makeaccented(font, 'E', 'uni030C', 'Ecaron')  # U+011A
     makeaccented(font, 'e', 'uni030C', 'ecaron')  # U+011B
-    makeaccented(font, 'L', 'uni02BC', 'Lcaron')  # U+013D
-    makeaccented(font, 'l', 'uni02BC', 'lcaron')  # U+013E
+    makeaccented(font, 'I', 'uni0304', 'Imacron')  # U+012A
+    makeaccented(font, 'dotlessi', 'uni0304', 'imacron')  # U+012B
+    makedigraph(font, 'i', 'j', 'ij')  # U+0133
+    makeaccented(font, 'L', 'uni0315', 'Lcaron')  # U+013D
+    makeaccented(font, 'l', 'uni0315', 'lcaron')  # U+013E
     makeaccented(font, 'N', 'uni030C', 'Ncaron')  # U+0147
     makeaccented(font, 'n', 'uni030C', 'ncaron')  # U+0148
+    makeaccented(font, 'O', 'uni0304', 'Omacron')  # U+014C
+    makeaccented(font, 'o', 'uni0304', 'omacron')  # U+014D
+    makeaccented(font, 'o', 'uni030B', 'ohungarumlaut')  # U+0151
     makedigraph(font, 'O', 'E', 'OE')  # U+0152
     makedigraph(font, 'o', 'e', 'oe')  # U+0153
     makeaccented(font, 'R', 'uni030C', 'Rcaron')  # U+0158
@@ -450,17 +570,25 @@ def makeaccent(font):
     makeaccented(font, 'S', 'uni030C', 'Scaron')  # U+0160
     makeaccented(font, 's', 'uni030C', 'scaron')  # U+0161
     makeaccented(font, 'T', 'uni030C', 'Tcaron')  # U+0164
-    makeaccented(font, 't', 'uni02BC', 'tcaron')  # U+0165
+    makeaccented(font, 't', 'uni0315', 'tcaron')  # U+0165
+    makeaccented(font, 'U', 'uni0304', 'Umacron')  # U+016A
+    makeaccented(font, 'u', 'uni0304', 'umacron')  # U+016B
+    makeaccented(font, 'U', 'uni030A', 'Uring')  # U+016E
+    makeaccented(font, 'u', 'uni030A', 'uring')  # U+016F
+    makeaccented(font, 'U', 'uni030B', 'Uhungarumlaut')  # U+0170
+    makeaccented(font, 'u', 'uni030B', 'uhungarumlaut')  # U+0171
+    makeaccented(font, 'Y', 'uni0308', 'Ydieresis')  # U+0178
     makeaccented(font, 'Z', 'uni030C', 'Zcaron')  # U+017D
     makeaccented(font, 'z', 'uni030C', 'zcaron')  # U+017E
     makedigraph(font, 'D', 'Zcaron', 'uni01C4')  # U+01C4
+    makedigraph(font, 'D', 'zcaron', 'uni01C5')  # U+01C5
     makedigraph(font, 'd', 'zcaron', 'uni01C6')  # U+01C6
+    makedigraph(font, 'D', 'Z', 'uni01F1')  # U+01F1
+    makedigraph(font, 'D', 'z', 'uni01F2')  # U+01F2
+    makedigraph(font, 'd', 'z', 'uni01F3')  # U+01F3
     
-    font.addLookup('sideaccents', 'gpos_pair', (), [['kern', [['latn', ['dflt']]]]])
-    font.addLookupSubtable('sideaccents', 'sacc')
-    font.autoKern('sacc', 30, ['d', 'l'], ['uni02BC'], touch=True)
-    font.autoKern('sacc', 60, ['t', 't_t'], ['uni02BC'], touch=True)
-    font.autoKern('sacc', 150, ['L', 'L_L'], ['uni02BC'], touch=True)
+    font.__getitem__('L_L').addPosSub('sacc', 'uni0315', 0, 0, 0, 0, -80, 0, 0, 0)
+    font.__getitem__('t_t').addPosSub('sacc', 'uni0315', 0, 0, 0, 0, -80, 0, 0, 0)
 
 
 def charname(char):
@@ -483,18 +611,19 @@ def autokern(font):
     lower = list('abcdefghijklmnopqrstuvwxyz') + lower_ligatures
     all_chars = caps + lower
     
+    accented = [name for name in all_glyphs if len(name) > 3 and name[1:] in ['grave', 'acute', 'circumflex', 'tilde', 'dieresis', 'ring', 'cedilla', 'macron', 'caron', 'hungarumlaut']]
     lvbar = list('BDEFHIKLMNPRbhklmnr')
-    lvbar = lvbar + [name for name in ligatures if name[0] in lvbar]
+    lvbar = lvbar + [name for name in ligatures if name[0] in lvbar] + [name for name in accented if name[0] in lvbar]
     lbowl = list('ACGOQUacdeoqyu')
-    lbowl = lbowl + [name for name in ligatures if name[0] in lbowl]
+    lbowl = lbowl + [name for name in ligatures if name[0] in lbowl] + [name for name in accented if name[0] in lbowl]
     lcmplx = list('JSTVWXYZfgijpstvwxz')
-    lcmplx = lcmplx + [name for name in ligatures if name[0] in lcmplx]
+    lcmplx = lcmplx + [name for name in ligatures if name[0] in lcmplx] + [name for name in accented if name[0] in lcmplx]
     rvbar = list('HIMNdhlmn')
-    rvbar = rvbar + [name for name in ligatures if name[-1] in rvbar]
+    rvbar = rvbar + [name for name in ligatures if name[-1] in rvbar] + [name for name in accented if name[0] in rvbar]
     rbowl = list('ABDOSUbgjopsuy')
-    rbowl = rbowl + [name for name in ligatures if name[-1] in rbowl]
+    rbowl = rbowl + [name for name in ligatures if name[-1] in rbowl] + [name for name in accented if name[0] in rbowl]
     rcmplx = list('CEFGJKLPQRTVWXYZacefikqrtvwxz')
-    rcmplx = rcmplx + [name for name in ligatures if name[-1] in rcmplx]
+    rcmplx = rcmplx + [name for name in ligatures if name[-1] in rcmplx] + [name for name in accented if name[0] in rcmplx]
     
     t = psMat.translate(0, -30)
     font.__getitem__('T').transform(t)
@@ -503,24 +632,30 @@ def autokern(font):
     # Add a kerning lookup table.
     font.addLookup('kerning', 'gpos_pair', (), [['kern', [['latn', ['dflt']]]]])
     
-    font.addKerningClass('kerning', 'kern0', [rvbar, rbowl, rcmplx], [[], lvbar, lbowl, lcmplx], [0, 0, -20, -30, 0, -20, -30, -30, 0, -30, -30, -30])
+    font.addKerningClass('kerning', 'kern0', [rvbar, rbowl, rcmplx], [[], lvbar, lbowl, lcmplx], [0, 0, -20, -30, 0, -20, -25, -30, 0, -30, -30, -30])
     font.addLookupSubtable('kerning', 'kern')
     
     # Everyone knows that two slashes together need kerning... (even if they didn't realise it)
     font.autoKern('kern', 150, [charname('/'), charname('\\')], [charname('/'), charname('\\')])
 
     # 
-    font.__getitem__(charname('1')).addPosSub('kern', charname('1'), 160)
+    font.__getitem__(charname('1')).addPosSub('kern', charname('1'), 80)
+    
+    #
+    for char, kern in [('D', -60), ('F', -60), ('G', -60), ('J', -60), ('O', -60), ('P', -60), ('T', -60), ('V', -60), ('W', -60), ('Y', -60), ('T_T', -120), ('e', -60), ('f', -60), ('o', -60), ('p', -60), ('r', -60), ('v', -60)]:
+        font.__getitem__(char).addPosSub('kern', charname(','), kern)
+        font.__getitem__(char).addPosSub('kern', charname('.'), kern)
     
     # ascending order in 'separation.'
     font.autoKern('kern', 30, ['C'], all_chars, minKern=30)
     font.autoKern('kern', 60, ['r'], lower, minKern=30, onlyCloser=True)
-    font.autoKern('kern', 80, all_chars, ['g'], minKern=30)
-    font.autoKern('kern', 80, ['X'], all_chars, minKern=30, onlyCloser=True)
+    font.autoKern('kern', 80, ['R', 'C_R', 'E_R', 'R_R', 'X'], all_chars, minKern=30, onlyCloser=True)
     font.autoKern('kern', 80, all_chars, ['X'], minKern=30, onlyCloser=True)
-    font.autoKern('kern', 100, ['V', 'K', 'k'], all_chars, minKern=30, onlyCloser=True)
-    font.autoKern('kern', 120, all_chars, ['T', 'T_O', 'T_T', 'Y'], minKern=30, onlyCloser=True)
-    font.autoKern('kern', 120, ['Y', 'f'], all_chars, minKern=30, onlyCloser=True)
+    font.autoKern('kern', 90, all_chars, ['g'], minKern=30, onlyCloser=True)
+    font.autoKern('kern', 90, ['V', 'v'], all_chars, minKern=30, onlyCloser=True)
+    font.autoKern('kern', 100, ['K', 'k'], all_chars, minKern=30, onlyCloser=True)
+    font.autoKern('kern', 120, all_chars, ['T', 'T_O', 'T_T', 'Y', 'Z'], minKern=30, onlyCloser=True)
+    font.autoKern('kern', 120, ['Y', 'Z', 'f', 'P'], all_chars, minKern=30, onlyCloser=True)
     font.autoKern('kern', 130, ['J'], all_chars, minKern=30, onlyCloser=True)
     font.autoKern('kern', 140, ['r_r'], lower, minKern=30, onlyCloser=True)
     font.autoKern('kern', 150, ['T', 'F'], all_chars, minKern=30, onlyCloser=True)
@@ -530,13 +665,17 @@ def autokern(font):
     # minKern not affect when touch=True?
     font.autoKern('kern', 20, ['L', 'L_L', 'E', 'E_E'], all_chars, minKern=30, onlyCloser=True, touch=True)
     font.autoKern('kern', 110, ['L', 'L_L'], ['j', 'Y'], touch=True)
+    font.autoKern('kern', 60, ['E', 'E_E'], ['V', 'v'], touch=True)
     font.autoKern('kern', 80, ['E', 'E_E'], ['j'], touch=True)
     font.autoKern('kern', 30, [char for char in all_chars if char not in ['r']], ['f', 't', 't_t'], minKern=30, onlyCloser=True, touch=True)
-    font.autoKern('kern', 60, ['a', 'G'], ['t', 't_t'], touch=True)
-    font.autoKern('kern', 60, ['X'], ['f', 't', 't_t'], touch=True)
-    font.autoKern('kern', 60, ['r'], ['T', 'T_O', 'T_T', 'X'], touch=True)
-    font.autoKern('kern', 100, ['r_r'], ['T', 'T_O', 'T_T', 'X'], touch=True)
-    font.autoKern('kern', 60, ['C'], ['V', 'v'], touch=True)
+    font.autoKern('kern', 50, ['n', 'o', 's'], ['t', 't_t'], touch=True)
+    font.autoKern('kern', 70, ['a', 'G'], ['t', 't_t'], touch=True)
+    font.autoKern('kern', 60, ['X', 'Z'], ['f', 't', 't_t'], touch=True)
+    font.autoKern('kern', 60, ['r'], ['T', 'T_O', 'T_T', 'X', 'j'], touch=True)
+    font.autoKern('kern', 100, ['r_r'], ['T', 'T_O', 'T_T', 'X', 'j'], touch=True)
+    font.autoKern('kern', 60, ['P'], ['g'], touch=True)
+    font.autoKern('kern', 40, ['C'], ['V', 'v'], touch=True)
+    font.autoKern('kern', 40, ['V', 'v'], ['J'], touch=True)
     font.autoKern('kern', 150, ['F'], ['z'], touch=True)
     font.autoKern('kern', 0, ['T_T'], ['T_T', 'T'], touch=True)
     
@@ -566,6 +705,8 @@ for line, position, bbox, fname, chars in characters:
         characters.append([4, None, bbox, fname, ('|',)])
     if chars == ('-',):
         characters.append([line, None, bbox, fname, (u'‐',)])
+    if chars == ('.',):
+        characters.append([line, None, bbox, fname, (u'·',)])
     if chars == ('!',):
         characters.append([line, None, bbox, fname, (u'¡',)])
     if chars == ('?',):
@@ -604,10 +745,12 @@ for line, position, bbox, fname, chars in characters:
         c.transform(psMat.compose(psMat.scale(1, 1.3), psMat.translate(0, -100)))
     if chars == ('-',) or chars == (u'‐',):
         c.transform(psMat.scale(0.9, 1.0))
-    if chars == (u'«',) or chars == (u'»',):
-        c.transform(psMat.scale(0.8, 1.0))
     if chars == (u'‐',):
         c.transform(psMat.translate(0, -70))
+    if chars == (u'·',):
+        c.transform(psMat.translate(0, 220))
+    if chars == (u'«',) or chars == (u'»',):
+        c.transform(psMat.scale(0.8, 1.0))
     if chars == (u'‘',):
         rotate_glyph(c, 18)
     if chars == (u'’',):
@@ -627,6 +770,10 @@ c.width = 256
 
 makeaccent(font)
 autokern(font)
+font.os2_typoascent = 256
+font.os2_typodescent = 0
+font.os2_panose = (3, 0, 5, 2, 0, 0, 0, 0, 0, 0)
+font.os2_codepages = (0x2000009F, 0)
 font_fname = '../font/xkcd-script.sfd'
 
 if not os.path.exists(os.path.dirname(font_fname)):
