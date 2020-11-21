@@ -71,6 +71,11 @@ def basic_font():
     font.addAnchorClass('dbottom', 'bottom')
     font.addLookupSubtable('anchors', 'dupperright')
     font.addAnchorClass('dupperright', 'upperright')
+    font.addLookup('mkmk', 'gpos_mark2mark', (), [['mkmk',
+                                                      [['latn',
+                                                        ['dflt']]]]])
+    font.addLookupSubtable('mkmk', 'dtop1')
+    font.addAnchorClass('dtop1', 'top1')
 
     return font
 
@@ -116,6 +121,11 @@ def create_char(font, chars, fname):
             c = font.createMappedChar(chars[0])
         else:
             c = font.createMappedChar(ord(chars[0]))
+    elif len(chars) >= 3 and chars[1] == '.':
+        # variant glyph.
+        variant_name = ''.join(chars)
+        
+        c = font.createChar(-1, variant_name)
     else:
         # Multiple characters - this is a ligature. We need to register this in the
         # ligature lookup table we created. Not all font-handling libraries will do anything
@@ -237,6 +247,8 @@ def translate_glyph(c, char_bbox, cap_height, baseline):
         c.width = scaled_width + 2 * space
     if c.glyphname == 'one':
         t = psMat.translate(3 * space, 0)
+    elif c.glyphname == 'f':
+        t = psMat.translate(0 * space, 0)
     elif c.glyphname in large_tail_chars:
         t = psMat.translate(-space, 0)
     elif c.glyphname in more_large_tail_chars:
@@ -296,25 +308,39 @@ def addanchor(font, char):
         c.addAnchorPoint('upperright', 'base', xmax, ymax)
 
 
+def getcontours(c, y, below=False):
+    if type(c) is fontforge.layer:
+        lfrom = c
+    else:
+        lfrom = c.foreground
+    l1 = fontforge.layer()
+    l2 = fontforge.layer()
+    i = 0
+    while i < len(lfrom):
+        _, ymin, _, ymax = lfrom[i].boundingBox()
+        if (not below) and ymin >= y or below and ymax <= y:
+            l1 += lfrom[i]
+        else:
+            l2 += lfrom[i]
+        i = i + 1
+    return (l1, l2)
+
+
 def getaccent(font, src, glyph, comb, scale=1.0, anchorclass='top'):
     csrc = font.__getitem__(src)
     cglyph = font.createMappedChar(glyph)
     cglyph.width = csrc.width
-    lfrom = csrc.foreground
-    lto = cglyph.foreground
     xmin, _, xmax, _ = csrc.boundingBox()
     ytop = 0
-    i = 0
-    while i < len(lfrom):
-        _, ymin, _, ymax = lfrom[i].boundingBox()
-        if ymax >= 540:
-            lto += lfrom[i]
-            if 0.4 * ymax + 0.6 * ymin - 135 > ytop:
-                ytop = 0.4 * ymax + 0.6 * ymin - 135
-        else:
-            if ymax > ytop:
-                ytop = ymax
-        i = i + 1
+    (lbase, lto) = getcontours(csrc, 540, below=(anchorclass == 'top' or anchorclass == 'upperright'))
+    _, ymin, _, ymax = lbase.boundingBox()
+    #print(src, ymax)
+    if ymax > ytop:
+        ytop = ymax
+    _, ymin, _, ymax = lto.boundingBox()
+    #print(src, 0.2 * ymax + 0.8 * ymin - 70)
+    if 0.2 * ymax + 0.8 * ymin - 70 > ytop:
+        ytop = 0.2 * ymax + 0.8 * ymin -70
     t = psMat.translate(-(xmin + xmax) / 2, -ytop)
     lto.transform(psMat.compose(psMat.compose(t, psMat.scale(scale)), psMat.inverse(t)))
     ccomb = font.createMappedChar(comb)
@@ -326,9 +352,17 @@ def getaccent(font, src, glyph, comb, scale=1.0, anchorclass='top'):
         rspace = -2 * space
         _, ymin, _, ymax = ccomb.boundingBox()
         ccomb.addAnchorPoint(anchorclass, 'mark', xmin, ymax)
+    elif anchorclass == 'bottom':
+        rspace = 2 * space
+        _, ymin, _, ymax = ccomb.boundingBox()
+        ccomb.addAnchorPoint(anchorclass, 'mark', (xmin + xmax) / 2, ymax)
     else:
         rspace = 2 * space
         ccomb.addAnchorPoint(anchorclass, 'mark', (xmin + xmax) / 2, ytop)
+        if anchorclass == 'top':
+            ccomb.addAnchorPoint('top1', 'mark', (xmin + xmax) / 2, ytop)
+            _, ymin, _, ymax = ccomb.boundingBox()
+            ccomb.addAnchorPoint('top1', 'basemark', (xmin + xmax) / 2, ymax)
     t = psMat.translate(-xmax - rspace, 0)
     ccomb.transform(t)
     ccomb.width = 0
@@ -339,21 +373,14 @@ def getaccent(font, src, glyph, comb, scale=1.0, anchorclass='top'):
 
 def getbase(cfrom, cto, lowercase=False):
     cto.width = cfrom.width
-    lfrom = cfrom.foreground
-    lto = cto.foreground
     xmin, _, xmax, _ = cfrom.boundingBox()
     ytop = 350
-    i = 0
-    while i < len(lfrom):
-        _, ymin, _, ymax = lfrom[i].boundingBox()
-        if (lowercase and ymax >= 420) or (not lowercase and ymax >= 540):
-            if cfrom.glyphname == 'j':
-                xmin, _, xmax, _ = lfrom[i].boundingBox()
-        else:
-            lto += lfrom[i]
-            if ymax > ytop:
-                ytop = ymax
-        i = i + 1
+    (lto, laccent) = getcontours(cfrom, (420 if lowercase else 540), below=True)
+    _, ymin, _, ymax = lto.boundingBox()
+    if ymax > ytop:
+        ytop = ymax
+    if cfrom.glyphname == 'j':
+        xmin, _, xmax, _ = laccent.boundingBox()
     cto.foreground = lto
     cto.addAnchorPoint('top', 'base', (xmin + xmax) / 2, ytop)
 
@@ -364,13 +391,7 @@ def makecedilla(font):
     l2 = font.__getitem__('plus').foreground.dup()
     l2.transform(psMat.translate(-18, 400))
     l2.exclude(l1)
-    l3 = fontforge.layer()
-    i = 0
-    while i < len(l2):
-        _, ymin, _, ymax = l2[i].boundingBox()
-        if ymin < 500:
-            l3 += l2[i]
-        i = i + 1
+    (_, l3) = getcontours(l2, 500)
     c.foreground = l3
     c.transform(psMat.translate(0, -560))
     c.transform(psMat.scale(0.6, 0.35))
@@ -391,14 +412,8 @@ def makecedilla(font):
 
 def makecombslash(font):
     c = font.createMappedChar('uni0337')
-    l1 = font.__getitem__('percent').foreground.dup()
-    l2 = fontforge.layer()
-    i = 0
-    while i < len(l1):
-        _, ymin, _, ymax = l1[i].boundingBox()
-        if ymax - ymin >= 300:
-            l2 += l1[i]
-        i = i + 1
+    (_, l1) = getcontours(font.__getitem__('percent'), 200)
+    (_, l2) = getcontours(l1, 300, below=True)
     c.foreground = l2
     _, ymin, _, ymax = c.boundingBox()
     c.transform(psMat.translate(0, -ymin))
@@ -411,12 +426,55 @@ def makecombslash(font):
     c.transform(psMat.translate(-c.width, 0))
 
 
-def makeaccented(font, charbase, characcent, charto):
+def makeaccented(font, charto):
+    ua = fontforge.UnicodeAnnotationFromLib(fontforge.unicodeFromName(charto)).decode('utf-8').split()
+    uai = ua.index(u'≍') if u'≍' in ua else -1
+    if uai >= 0 and ua[uai+1] == '0069':
+        ua[uai+1] = '0131'  # i to dotlessi
+    if uai >= 0 and ua[uai+1] == '006A':
+        ua[uai+1] = '0237'  # j to dotlessj
+    if uai >= 0 and ua[uai+2] == '030C' and (ua[uai+1] in ['0064', '004C', '006C', '0074']):
+        ua[uai+2] = '0315'  # caron to comma above right
+    if uai >= 0 and ua[uai+2] == '0327' and (ua[uai+1] == '0067'):
+        ua[uai+2] = '0312'  # cedilla to turned comma above
+    elif uai >= 0 and ua[uai+2] == '0327' and not (ua[uai+1] in ['0043', '0063', '0045', '0065', '0053', '0073', '0054', '0074']):
+        ua[uai+2] = '0326'  # cedilla to comma below
+    d = {
+        'Oslash': [u'≍', '004F', '0338'],
+        'oslash': [u'≍', '006F', '0337'],
+    }
+    if charto in d:
+        ua = d[charto]
+        uai = 0
+    if uai < 0:
+        return
+    charbase = fontforge.nameFromUnicode(int(ua[uai+1], base=16))
+    characcent = fontforge.nameFromUnicode(int(ua[uai+2], base=16))
+    if not font.__contains__(charbase) or not font.__contains__(characcent):
+        return
     c = font.createMappedChar(charto)
     
     c.width = font.__getitem__(charbase).width
     c.addReference(charbase)
     c.appendAccent(characcent)
+    # appendAccent don't reproduce unused anchor points.
+    ca = font.__getitem__(charbase).anchorPoints
+    caa = font.__getitem__(characcent).anchorPoints
+    c.anchorPoints = ca
+    for i in ca:
+        if i[0] == 'top' and i[1] == 'base':
+            x1, y1 = i[2:4]
+            for j in caa:
+                if j[0] == 'top' and j[1] == 'mark':
+                    x2, y2 = j[2:4]
+                    for k in caa:
+                        if k[0] == 'top1' and k[1] == 'basemark':
+                            x3, y3 = k[2:4]
+                            c.addAnchorPoint('top', 'base', x1-x2+x3, y1-y2+y3)
+                            break
+                    break
+            break
+    #
     if charbase == 'dotlessi':
         wadd = c.width
         space = 20
@@ -445,9 +503,13 @@ def makedigraph(font, chara, charb, charto, kerning=-120):
 
 def makeaccent(font):
     getaccent(font, 'Ograve', 'grave', 'gravecomb')
+    getbase(font.__getitem__('Ograve'), font.createChar(-1, 'O.sc'))
     getaccent(font, 'Udieresis', 'dieresis', 'uni0308')
+    getbase(font.__getitem__('Udieresis'), font.createChar(-1, 'U.sc'))
     getaccent(font, 'Aring', 'degree', 'uni030A')
+    getbase(font.__getitem__('Aring'), font.createChar(-1, 'A.sc'))
     getaccent(font, 'Eacute', 'acute', 'acutecomb')
+    getbase(font.__getitem__('Eacute'), font.createChar(-1, 'E.sc'))
     getaccent(font, 'Emacron', 'macron', 'uni0304')
     font.__getitem__('asciicircum').transform(psMat.translate(0, 100))
     getaccent(font, 'asciicircum', 'circumflex', 'uni0302', scale=0.8)
@@ -463,6 +525,13 @@ def makeaccent(font):
     font.__getitem__('minute').transform(psMat.translate(0, 80))
     getaccent(font, 'Ohungarumlaut', 'hungarumlaut', 'uni030B')
     getaccent(font, 'j', 'dotaccent', 'uni0307')
+    rotate_glyph(font.__getitem__('comma'))
+    font.__getitem__('comma').transform(psMat.translate(0, 600))
+    getaccent(font, 'comma', 'uni02BB', 'uni0312')
+    font.__getitem__('comma').transform(psMat.translate(0, -600))
+    rotate_glyph(font.__getitem__('comma'))
+    getaccent(font, 'comma', 'uni02CF', 'uni0326', anchorclass='bottom')
+    font.removeGlyph('uni02CF')  # temporary use
     
     makecedilla(font)
     makecombslash(font)
@@ -484,102 +553,24 @@ def makeaccent(font):
         addanchor(font, i)
     for i in range(ord('a'), ord('z')+1):
         addanchor(font, i)
+    addanchor(font, 'Udieresis')
+    addanchor(font, 'Aring')
     
     font.addLookup('sideaccents', 'gpos_pair', (), [['mark', [['latn', ['dflt']]]]])
     font.addLookupSubtable('sideaccents', 'sacc')
     
-    #font.selection.select(('ranges', None), 0x00C0, 0x17E)
-    #font.build()
-    makeaccented(font, 'A', 'gravecomb', 'Agrave')  # U+00C0
-    makeaccented(font, 'A', 'acutecomb', 'Aacute')  # U+00C1
-    makeaccented(font, 'A', 'uni0302', 'Acircumflex')  # U+00C2
-    makeaccented(font, 'A', 'tildecomb', 'Atilde')  # U+00C3
-    makeaccented(font, 'A', 'uni0308', 'Adieresis')  # U+00C4
     makedigraph(font, 'A', 'E', 'AE')  # U+00C6
-    makeaccented(font, 'C', 'uni0327', 'Ccedilla')  # U+00C7
-    makeaccented(font, 'E', 'gravecomb', 'Egrave')  # U+00C8
-    makeaccented(font, 'E', 'uni0302', 'Ecircumflex')  # U+00CA
-    makeaccented(font, 'E', 'uni0308', 'Edieresis')  # U+00CB
-    makeaccented(font, 'I', 'gravecomb', 'Igrave')  # U+00CC
-    makeaccented(font, 'I', 'acutecomb', 'Iacute')  # U+00CD
-    makeaccented(font, 'I', 'uni0302', 'Icircumflex')  # U+00CE
-    makeaccented(font, 'I', 'uni0308', 'Idieresis')  # U+00CF
-    makeaccented(font, 'N', 'tildecomb', 'Ntilde')  # U+00D1
-    makeaccented(font, 'O', 'acutecomb', 'Oacute')  # U+00D3
-    makeaccented(font, 'O', 'uni0302', 'Ocircumflex')  # U+00D4
-    makeaccented(font, 'O', 'tildecomb', 'Otilde')  # U+00D5
-    makeaccented(font, 'O', 'uni0308', 'Odieresis')  # U+00D6
-    makeaccented(font, 'O', 'uni0338', 'Oslash')  # U+00D8
-    makeaccented(font, 'U', 'gravecomb', 'Ugrave')  # U+00D9
-    makeaccented(font, 'U', 'acutecomb', 'Uacute')  # U+00DA
-    makeaccented(font, 'U', 'uni0302', 'Ucircumflex')  # U+00DB
-    makeaccented(font, 'Y', 'acutecomb', 'Yacute')  # U+00DD
+    addanchor(font, 'AE')
     makedigraph(font, 'longs', 's', 'germandbls', -180)  # U+00DF
-    makeaccented(font, 'a', 'gravecomb', 'agrave')  # U+00E0
-    makeaccented(font, 'a', 'acutecomb', 'aacute')  # U+00E1
-    makeaccented(font, 'a', 'uni0302', 'acircumflex')  # U+00E2
-    makeaccented(font, 'a', 'tildecomb', 'atilde')  # U+00E3
-    makeaccented(font, 'a', 'uni0308', 'adieresis')  # U+00E4
-    makeaccented(font, 'a', 'uni030A', 'aring')  # U+00E5
     makedigraph(font, 'a', 'e', 'ae')  # U+00E6
-    makeaccented(font, 'c', 'uni0327', 'ccedilla')  # U+00E7
-    makeaccented(font, 'e', 'gravecomb', 'egrave')  # U+00E8
-    makeaccented(font, 'e', 'acutecomb', 'eacute')  # U+00E9
-    makeaccented(font, 'e', 'uni0302', 'ecircumflex')  # U+00EA
-    makeaccented(font, 'e', 'uni0308', 'edieresis')  # U+00EB
-    makeaccented(font, 'dotlessi', 'gravecomb', 'igrave')  # U+00EC
-    makeaccented(font, 'dotlessi', 'acutecomb', 'iacute')  # U+00ED
-    makeaccented(font, 'dotlessi', 'uni0302', 'icircumflex')  # U+00EE
-    makeaccented(font, 'dotlessi', 'uni0308', 'idieresis')  # U+00EF
-    makeaccented(font, 'n', 'tildecomb', 'ntilde')  # U+00F1
-    makeaccented(font, 'o', 'gravecomb', 'ograve')  # U+00F2
-    makeaccented(font, 'o', 'acutecomb', 'oacute')  # U+00F3
-    makeaccented(font, 'o', 'uni0302', 'ocircumflex')  # U+00F4
-    makeaccented(font, 'o', 'tildecomb', 'otilde')  # U+00F5
-    makeaccented(font, 'o', 'uni0308', 'odieresis')  # U+00F6
-    makeaccented(font, 'o', 'uni0337', 'oslash')  # U+00F8
-    makeaccented(font, 'u', 'gravecomb', 'ugrave')  # U+00F9
-    makeaccented(font, 'u', 'acutecomb', 'uacute')  # U+00FA
-    makeaccented(font, 'u', 'uni0302', 'ucircumflex')  # U+00FB
-    makeaccented(font, 'u', 'uni0308', 'udieresis')  # U+00FC
-    makeaccented(font, 'y', 'acutecomb', 'yacute')  # U+00FD
-    makeaccented(font, 'y', 'uni0308', 'ydieresis')  # U+00FF
-    makeaccented(font, 'A', 'uni0304', 'Amacron')  # U+0100
-    makeaccented(font, 'a', 'uni0304', 'amacron')  # U+0101
-    makeaccented(font, 'C', 'uni030C', 'Ccaron')  # U+010C
-    makeaccented(font, 'c', 'uni030C', 'ccaron')  # U+010D
-    makeaccented(font, 'D', 'uni030C', 'Dcaron')  # U+010E
-    makeaccented(font, 'd', 'uni0315', 'dcaron')  # U+010F
-    makeaccented(font, 'e', 'uni0304', 'emacron')  # U+0113
-    makeaccented(font, 'E', 'uni030C', 'Ecaron')  # U+011A
-    makeaccented(font, 'e', 'uni030C', 'ecaron')  # U+011B
-    makeaccented(font, 'I', 'uni0304', 'Imacron')  # U+012A
-    makeaccented(font, 'dotlessi', 'uni0304', 'imacron')  # U+012B
+    addanchor(font, 'ae')
     makedigraph(font, 'i', 'j', 'ij')  # U+0133
-    makeaccented(font, 'L', 'uni0315', 'Lcaron')  # U+013D
-    makeaccented(font, 'l', 'uni0315', 'lcaron')  # U+013E
-    makeaccented(font, 'N', 'uni030C', 'Ncaron')  # U+0147
-    makeaccented(font, 'n', 'uni030C', 'ncaron')  # U+0148
-    makeaccented(font, 'O', 'uni0304', 'Omacron')  # U+014C
-    makeaccented(font, 'o', 'uni0304', 'omacron')  # U+014D
-    makeaccented(font, 'o', 'uni030B', 'ohungarumlaut')  # U+0151
     makedigraph(font, 'O', 'E', 'OE')  # U+0152
     makedigraph(font, 'o', 'e', 'oe')  # U+0153
-    makeaccented(font, 'R', 'uni030C', 'Rcaron')  # U+0158
-    makeaccented(font, 'r', 'uni030C', 'rcaron')  # U+0159
-    makeaccented(font, 'S', 'uni030C', 'Scaron')  # U+0160
-    makeaccented(font, 's', 'uni030C', 'scaron')  # U+0161
-    makeaccented(font, 'T', 'uni030C', 'Tcaron')  # U+0164
-    makeaccented(font, 't', 'uni0315', 'tcaron')  # U+0165
-    makeaccented(font, 'U', 'uni0304', 'Umacron')  # U+016A
-    makeaccented(font, 'u', 'uni0304', 'umacron')  # U+016B
-    makeaccented(font, 'U', 'uni030A', 'Uring')  # U+016E
-    makeaccented(font, 'u', 'uni030A', 'uring')  # U+016F
-    makeaccented(font, 'U', 'uni030B', 'Uhungarumlaut')  # U+0170
-    makeaccented(font, 'u', 'uni030B', 'uhungarumlaut')  # U+0171
-    makeaccented(font, 'Y', 'uni0308', 'Ydieresis')  # U+0178
-    makeaccented(font, 'Z', 'uni030C', 'Zcaron')  # U+017D
-    makeaccented(font, 'z', 'uni030C', 'zcaron')  # U+017E
+    for i in range(0x00C0, 0x01FF+1):
+        charto = fontforge.nameFromUnicode(i)
+        if not font.__contains__(charto):
+            makeaccented(font, charto)
     makedigraph(font, 'D', 'Zcaron', 'uni01C4')  # U+01C4
     makedigraph(font, 'D', 'zcaron', 'uni01C5')  # U+01C5
     makedigraph(font, 'd', 'zcaron', 'uni01C6')  # U+01C6
@@ -650,13 +641,13 @@ def autokern(font):
     font.autoKern('kern', 30, ['C'], all_chars, minKern=30)
     font.autoKern('kern', 60, ['r'], lower, minKern=30, onlyCloser=True)
     font.autoKern('kern', 80, ['R', 'C_R', 'E_R', 'R_R', 'X'], all_chars, minKern=30, onlyCloser=True)
-    font.autoKern('kern', 80, all_chars, ['X'], minKern=30, onlyCloser=True)
+    font.autoKern('kern', 80, all_chars, ['X', 'f', 't', 't_t'], minKern=30, onlyCloser=True)
     font.autoKern('kern', 90, all_chars, ['g'], minKern=30, onlyCloser=True)
     font.autoKern('kern', 90, ['V', 'v'], all_chars, minKern=30, onlyCloser=True)
     font.autoKern('kern', 100, ['K', 'k'], all_chars, minKern=30, onlyCloser=True)
     font.autoKern('kern', 120, all_chars, ['T', 'T_O', 'T_T', 'Y', 'Z'], minKern=30, onlyCloser=True)
-    font.autoKern('kern', 120, ['Y', 'Z', 'f', 'P'], all_chars, minKern=30, onlyCloser=True)
-    font.autoKern('kern', 130, ['J'], all_chars, minKern=30, onlyCloser=True)
+    font.autoKern('kern', 120, ['Y', 'Z', 'P'], all_chars, minKern=30, onlyCloser=True)
+    font.autoKern('kern', 130, ['J', 'f'], all_chars, minKern=30, onlyCloser=True)
     font.autoKern('kern', 140, ['r_r'], lower, minKern=30, onlyCloser=True)
     font.autoKern('kern', 150, ['T', 'F'], all_chars, minKern=30, onlyCloser=True)
     font.autoKern('kern', 180, all_chars, ['j'], minKern=30, onlyCloser=True)
@@ -667,9 +658,8 @@ def autokern(font):
     font.autoKern('kern', 110, ['L', 'L_L'], ['j', 'Y'], touch=True)
     font.autoKern('kern', 60, ['E', 'E_E'], ['V', 'v'], touch=True)
     font.autoKern('kern', 80, ['E', 'E_E'], ['j'], touch=True)
-    font.autoKern('kern', 30, [char for char in all_chars if char not in ['r']], ['f', 't', 't_t'], minKern=30, onlyCloser=True, touch=True)
-    font.autoKern('kern', 50, ['n', 'o', 's'], ['t', 't_t'], touch=True)
     font.autoKern('kern', 70, ['a', 'G'], ['t', 't_t'], touch=True)
+    font.autoKern('kern', 30, ['i'], ['f', 't'], touch=True)
     font.autoKern('kern', 60, ['X', 'Z'], ['f', 't', 't_t'], touch=True)
     font.autoKern('kern', 60, ['r'], ['T', 'T_O', 'T_T', 'X', 'j'], touch=True)
     font.autoKern('kern', 100, ['r_r'], ['T', 'T_O', 'T_T', 'X', 'j'], touch=True)
@@ -739,8 +729,11 @@ for line, position, bbox, fname, chars in characters:
         baseline=mean(line_features['baseline']),
         cap_height=mean(line_features['cap-height']))
     
+    _, ymin, _, ymax = c.boundingBox()
     if line == 0:
         weight_glyph(c, 10)
+    if chars == ('I', '.', 's', 'c'):
+        c.transform(psMat.translate(0, -20))
     if chars == ('|',):
         c.transform(psMat.compose(psMat.scale(1, 1.3), psMat.translate(0, -100)))
     if chars == ('-',) or chars == (u'‐',):
@@ -752,9 +745,9 @@ for line, position, bbox, fname, chars in characters:
     if chars == (u'«',) or chars == (u'»',):
         c.transform(psMat.scale(0.8, 1.0))
     if chars == (u'‘',):
-        rotate_glyph(c, 18)
+        rotate_glyph(c, 15)
     if chars == (u'’',):
-        rotate_glyph(c, -18)
+        rotate_glyph(c, -15)
     if chars == (u'¿',) or chars == (u'¡',):
         rotate_glyph(c)
         c.transform(psMat.translate(0, -120))
