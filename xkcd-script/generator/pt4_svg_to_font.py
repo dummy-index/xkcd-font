@@ -71,6 +71,8 @@ def basic_font():
     font.addAnchorClass('dbottom', 'bottom')
     font.addLookupSubtable('anchors', 'dupperright')
     font.addAnchorClass('dupperright', 'upperright')
+    font.addLookupSubtable('anchors', 'dlowerrightend')
+    font.addAnchorClass('dlowerrightend', 'lowerrightend')
     font.addLookup('mkmk', 'gpos_mark2mark', (), [['mkmk',
                                                       [['latn',
                                                         ['dflt']]]]])
@@ -212,7 +214,8 @@ def scale_glyph(c, char_bbox, baseline, cap_height):
     c.transform(t)
 
 
-large_arm_chars = ['C', 'F', 'J', 'Q', 'T', 'T_T', 'f', 'q', 'r', 'five']
+large_arm_chars = ['C', 'F', 'J', 'Q', 'T', 'f', 'q', 'r', 'five']
+more_large_arm_chars = ['T_T']
 large_tail_chars = ['y', 'comma', 'semicolon']
 more_large_tail_chars = ['g', 'j']
 
@@ -243,6 +246,8 @@ def translate_glyph(c, char_bbox, cap_height, baseline):
         c.width = scaled_width + 4 * space
     elif c.glyphname in large_arm_chars:
         c.width = scaled_width
+    elif c.glyphname in more_large_arm_chars:
+        c.width = scaled_width - 2 * space
     else:
         c.width = scaled_width + 2 * space
     if c.glyphname == 'one':
@@ -306,6 +311,16 @@ def addanchor(font, char):
         c.addAnchorPoint('upperright', 'base', xmax - 80, ymax)
     else:
         c.addAnchorPoint('upperright', 'base', xmax, ymax)
+    l45 = c.foreground.dup()
+    l45.transform(psMat.scale(2**0.5,2**0.5))
+    l45.transform(psMat.rotate(math.radians(-45)))
+    yx = l45.yBoundsAtX(-1000, 1000)
+    if yx:
+        yx = yx[0]
+        xymin, xymax = l45.xBoundsAtY(yx-20, yx+20)
+        xy = xymin
+        c.addAnchorPoint('lowerrightend', 'base', (xy - yx) / 2, (xy + yx) / 2)
+    
 
 
 def getcontours(c, y, below=False):
@@ -426,12 +441,63 @@ def makecombslash(font):
     c.transform(psMat.translate(-c.width, 0))
 
 
+def makebreve(font):
+    c = font.createMappedChar('breve')
+    l1 = font.__getitem__('G').foreground.dup()
+    l2 = font.__getitem__('minus').foreground.dup()
+    l2.transform(psMat.translate(-100, 0))
+    l2.transform(psMat.scale(2, 1))
+    l2.exclude(l1)
+    (_, l3) = getcontours(l2, 300)
+    c.foreground = l3
+    c.transform(psMat.scale(0.6, 0.5))
+    c.transform(psMat.translate(0, 500))
+    c.simplify(1.0)
+    c.changeWeight(10, 'CJK')
+    c.simplify(1.0)
+    c.changeWeight(10, 'CJK')
+    l3 = c.foreground.dup()
+    space = 20
+    c.left_side_bearing = space
+    c.right_side_bearing = 2 * space
+    c = font.createMappedChar('uni0306')
+    c.foreground = l3
+    c.transform(psMat.translate(-140, 0))
+    c.addAnchorPoint('top', 'mark', 0, 470)
+    c.width = 0
+
+
+def makeogonek(font):
+    c = font.createMappedChar('ogonek')
+    l1 = font.__getitem__('c').foreground.dup()
+    l2 = font.__getitem__('plus').foreground.dup()
+    l2.transform(psMat.translate(-18, 250))
+    l2.exclude(l1)
+    (_, l3) = getcontours(l2, 300)
+    c.foreground = l3
+    c.transform(psMat.translate(0, -370))
+    c.transform(psMat.scale(0.5, 0.5))
+    c.simplify(1.0)
+    c.changeWeight(10, 'CJK')
+    c.simplify(1.0)
+    c.changeWeight(10, 'CJK')
+    l3 = c.foreground.dup()
+    space = 20
+    c.left_side_bearing = space
+    c.right_side_bearing = 2 * space
+    c = font.createMappedChar('uni0328')
+    c.foreground = l3
+    c.transform(psMat.translate(-105, 0))
+    c.addAnchorPoint('lowerrightend', 'mark', 0, 0)
+    c.width = 0
+
+
 def makeaccented(font, charto):
     ua = fontforge.UnicodeAnnotationFromLib(fontforge.unicodeFromName(charto)).decode('utf-8').split()
     uai = ua.index(u'≍') if u'≍' in ua else -1
-    if uai >= 0 and ua[uai+1] == '0069':
+    if uai >= 0 and ua[uai+1] == '0069' and (ua[uai+2] in ['0' + format(i, 'X') for i in range(0x300, 0x314+1)]):
         ua[uai+1] = '0131'  # i to dotlessi
-    if uai >= 0 and ua[uai+1] == '006A':
+    if uai >= 0 and ua[uai+1] == '006A' and (ua[uai+2] in ['0' + format(i, 'X') for i in range(0x300, 0x314+1)]):
         ua[uai+1] = '0237'  # j to dotlessj
     if uai >= 0 and ua[uai+2] == '030C' and (ua[uai+1] in ['0064', '004C', '006C', '0074']):
         ua[uai+2] = '0315'  # caron to comma above right
@@ -535,6 +601,8 @@ def makeaccent(font):
     
     makecedilla(font)
     makecombslash(font)
+    makebreve(font)
+    makeogonek(font)
     
     getbase(font.__getitem__('i'), font.createMappedChar('dotlessi'), lowercase=True)
     getbase(font.__getitem__('j'), font.createMappedChar('uni0237'), lowercase=True)
@@ -602,7 +670,7 @@ def autokern(font):
     lower = list('abcdefghijklmnopqrstuvwxyz') + lower_ligatures
     all_chars = caps + lower
     
-    accented = [name for name in all_glyphs if len(name) > 3 and name[1:] in ['grave', 'acute', 'circumflex', 'tilde', 'dieresis', 'ring', 'cedilla', 'macron', 'caron', 'hungarumlaut']]
+    accented = [name for name in all_glyphs if len(name) > 3 and name[1:] in ['grave', 'acute', 'circumflex', 'tilde', 'dieresis', 'ring', 'cedilla', 'macron', 'caron', 'hungarumlaut', 'dotaccent', 'breve', 'ogonek']]
     lvbar = list('BDEFHIKLMNPRbhklmnr')
     lvbar = lvbar + [name for name in ligatures if name[0] in lvbar] + [name for name in accented if name[0] in lvbar]
     lbowl = list('ACGOQUacdeoqyu')
@@ -633,7 +701,7 @@ def autokern(font):
     font.__getitem__(charname('1')).addPosSub('kern', charname('1'), 80)
     
     #
-    for char, kern in [('D', -60), ('F', -60), ('G', -60), ('J', -60), ('O', -60), ('P', -60), ('T', -60), ('V', -60), ('W', -60), ('Y', -60), ('T_T', -120), ('e', -60), ('f', -60), ('o', -60), ('p', -60), ('r', -60), ('v', -60)]:
+    for char, kern in [('D', -60), ('F', -60), ('G', -60), ('J', -60), ('O', -60), ('P', -60), ('T', -60), ('V', -60), ('W', -60), ('Y', -60), ('T_T', -60), ('e', -60), ('f', -60), ('o', -60), ('p', -60), ('r', -60), ('v', -60)]:
         font.__getitem__(char).addPosSub('kern', charname(','), kern)
         font.__getitem__(char).addPosSub('kern', charname('.'), kern)
     
@@ -667,7 +735,7 @@ def autokern(font):
     font.autoKern('kern', 40, ['C'], ['V', 'v'], touch=True)
     font.autoKern('kern', 40, ['V', 'v'], ['J'], touch=True)
     font.autoKern('kern', 150, ['F'], ['z'], touch=True)
-    font.autoKern('kern', 0, ['T_T'], ['T_T', 'T'], touch=True)
+    font.autoKern('kern', 30, ['r'], ['i'], touch=True)
     
     t = psMat.translate(0, 30)
     font.__getitem__('T').transform(t)
