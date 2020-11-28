@@ -75,7 +75,7 @@ def basic_font():
     font.addAnchorClass('dlowerrightend', 'lowerrightend')
     font.addLookup('mkmk', 'gpos_mark2mark', (), [['mkmk',
                                                       [['latn',
-                                                        ['dflt']]]]])
+                                                        ['dflt']]]]], 'anchors')
     font.addLookupSubtable('mkmk', 'dtop1')
     font.addAnchorClass('dtop1', 'top1')
 
@@ -266,8 +266,8 @@ def translate_glyph(c, char_bbox, cap_height, baseline):
 def weight_glyph(c, stroke_width):
     # Dilate the glyph with bottom keeping.
 
-    c.simplify(0.5, ['smoothcurves'])
-    c.changeWeight(stroke_width, 'CJK')
+    c.simplify(1.0)
+    c.stroke('circular', stroke_width, 'round', 'round', ('removeinternal',))
     t = psMat.translate(stroke_width / 2, stroke_width / 2)
     c.transform(t)
     c.width = c.width + stroke_width / 2
@@ -282,11 +282,15 @@ def rotate_glyph(c, theta=180):
     if theta == 180 or theta == -180:
         c.transform(psMat.compose(psMat.compose(t, psMat.scale(-1)), psMat.inverse(t)))
     else:
+        c.simplify(1.0)
         c.transform(psMat.compose(psMat.compose(t, psMat.rotate(math.radians(theta))), psMat.inverse(t)))
+        c.addExtrema('only_good_rm')
 
 
 def rotate_and_onto_baseline(c, theta):
+    c.simplify(1.0)
     c.transform(psMat.rotate(math.radians(theta)))
+    c.addExtrema('only_good_rm')
     _, ymin, _, ymax = c.boundingBox()
     c.transform(psMat.translate(0, -ymin))
     space = 20
@@ -303,6 +307,8 @@ def addanchor(font, char):
         xmax = c.width - 40
     if char == 'I':
         ymax = 620
+    if char in ['Eacute', 'Ograve', 'Aring']:
+        ymax = ymax - 35
     c.addAnchorPoint('top', 'base', (xmin + xmax) / 2, ymax)
     c.addAnchorPoint('bottom', 'base', (xmin + xmax) / 2, ymin)
     if c.glyphname == 'L':
@@ -353,9 +359,9 @@ def getaccent(font, src, glyph, comb, scale=1.0, anchorclass='top'):
     if ymax > ytop:
         ytop = ymax
     _, ymin, _, ymax = lto.boundingBox()
-    #print(src, 0.2 * ymax + 0.8 * ymin - 70)
-    if 0.2 * ymax + 0.8 * ymin - 70 > ytop:
-        ytop = 0.2 * ymax + 0.8 * ymin -70
+    #print(src, 0.2 * ymax + 0.8 * ymin - (65 / scale))
+    if 0.2 * ymax + 0.8 * ymin - (65 / scale) > ytop:
+        ytop = 0.2 * ymax + 0.8 * ymin - (65 / scale)
     t = psMat.translate(-(xmin + xmax) / 2, -ytop)
     lto.transform(psMat.compose(psMat.compose(t, psMat.scale(scale)), psMat.inverse(t)))
     ccomb = font.createMappedChar(comb)
@@ -377,6 +383,8 @@ def getaccent(font, src, glyph, comb, scale=1.0, anchorclass='top'):
         if anchorclass == 'top':
             ccomb.addAnchorPoint('top1', 'mark', (xmin + xmax) / 2, ytop)
             _, ymin, _, ymax = ccomb.boundingBox()
+            if comb in ['gravecomb', 'acutecomb', 'uni030A']:
+                ymax = ymax - 35
             ccomb.addAnchorPoint('top1', 'basemark', (xmin + xmax) / 2, ymax)
     t = psMat.translate(-xmax - rspace, 0)
     ccomb.transform(t)
@@ -411,9 +419,10 @@ def makecedilla(font):
     c.transform(psMat.translate(0, -560))
     c.transform(psMat.scale(0.6, 0.35))
     c.simplify(1.0)
-    c.changeWeight(10, 'CJK')
+    c.stroke('circular', 10, 'round', 'round', ('removeinternal',))
     c.simplify(1.0)
-    c.changeWeight(10, 'CJK')
+    c.stroke('circular', 10, 'round', 'round', ('removeinternal',))
+    c.addExtrema('only_good_rm')
     l3 = c.foreground.dup()
     space = 20
     c.left_side_bearing = space
@@ -422,6 +431,7 @@ def makecedilla(font):
     c.foreground = l3
     c.transform(psMat.translate(-120, 0))
     c.addAnchorPoint('bottom', 'mark', 0, 0)
+    c.transform(psMat.translate(-210, 0))
     c.width = 0
 
 
@@ -453,9 +463,10 @@ def makebreve(font):
     c.transform(psMat.scale(0.6, 0.5))
     c.transform(psMat.translate(0, 500))
     c.simplify(1.0)
-    c.changeWeight(10, 'CJK')
+    c.stroke('circular', 10, 'round', 'round', ('removeinternal',))
     c.simplify(1.0)
-    c.changeWeight(10, 'CJK')
+    c.stroke('circular', 10, 'round', 'round', ('removeinternal',))
+    c.addExtrema('only_good_rm')
     l3 = c.foreground.dup()
     space = 20
     c.left_side_bearing = space
@@ -463,7 +474,11 @@ def makebreve(font):
     c = font.createMappedChar('uni0306')
     c.foreground = l3
     c.transform(psMat.translate(-140, 0))
-    c.addAnchorPoint('top', 'mark', 0, 470)
+    c.addAnchorPoint('top', 'mark', 0, 460)
+    c.addAnchorPoint('top1', 'mark', 0, 460)
+    _, ymin, _, ymax = c.boundingBox()
+    c.addAnchorPoint('top1', 'basemark', 0, ymax)
+    c.transform(psMat.translate(-210, 0))
     c.width = 0
 
 
@@ -478,9 +493,10 @@ def makeogonek(font):
     c.transform(psMat.translate(0, -370))
     c.transform(psMat.scale(0.5, 0.5))
     c.simplify(1.0)
-    c.changeWeight(10, 'CJK')
+    c.stroke('circular', 10, 'round', 'round', ('removeinternal',))
     c.simplify(1.0)
-    c.changeWeight(10, 'CJK')
+    c.stroke('circular', 10, 'round', 'round', ('removeinternal',))
+    c.addExtrema('only_good_rm')
     l3 = c.foreground.dup()
     space = 20
     c.left_side_bearing = space
@@ -489,6 +505,7 @@ def makeogonek(font):
     c.foreground = l3
     c.transform(psMat.translate(-105, 0))
     c.addAnchorPoint('lowerrightend', 'mark', 0, 0)
+    c.transform(psMat.translate(-210, 0))
     c.width = 0
 
 
@@ -608,7 +625,6 @@ def makeaccent(font):
     getbase(font.__getitem__('j'), font.createMappedChar('uni0237'), lowercase=True)
     c = font.createMappedChar('longs')
     c.foreground = font.__getitem__('uni0237').foreground.dup()
-    c.simplify(0.5, ['ignoreslopes', 'ignoreextrema', 'smoothcurves'])
     rotate_and_onto_baseline(c, 175)
     c = font.createMappedChar('IJ')
     c.width = font.__getitem__('J').width
@@ -823,7 +839,11 @@ for line, position, bbox, fname, chars in characters:
         c.transform(psMat.translate(0, -30))
 
     # Simplify, then put the vertices on rounded coordinate positions.
-    c.simplify()
+    c.simplify(0.5, ['ignoreslopes', 'ignoreextrema', 'smoothcurves'])
+    c.addExtrema('only_good_rm')
+    c.round()
+    c.simplify(0.5, ['ignoreslopes', 'ignoreextrema', 'smoothcurves'])
+    c.addExtrema('only_good_rm')
     c.round()
 
 c = font.createMappedChar(32)
@@ -835,14 +855,14 @@ font.os2_typoascent = 256
 font.os2_typodescent = 0
 font.os2_panose = (3, 0, 5, 2, 0, 0, 0, 0, 0, 0)
 font.os2_codepages = (0x2000009F, 0)
+font.private.guess('BlueValues')
+font.private['BlueValues'] = font.private['BlueValues'][2:]
 font_fname = '../font/xkcd-script.sfd'
 
 if not os.path.exists(os.path.dirname(font_fname)):
     os.makedirs(os.path.dirname(font_fname))
 if os.path.exists(font_fname):
     os.remove(font_fname)
-#font.generate(font_fname) => GSUB/GPOS don't saved
-#font.generate(font_fname, flags=['opentype']) => arbitrarily [Populate]d
 font.save(font_fname)
 
 font.close()
