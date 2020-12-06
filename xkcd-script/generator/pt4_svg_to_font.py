@@ -6,10 +6,6 @@ import glob
 import parse
 import base64
 
-def len_ucs(ustr):
-    len(ustr.encode('utf-32')) // 4
-
-
 def array_ucs(ustr):
     work = []
     for uch in ustr:
@@ -509,31 +505,37 @@ def makeogonek(font):
     c.width = 0
 
 
+import unicodedata
+
 def makeaccented(font, charto):
-    ua = fontforge.UnicodeAnnotationFromLib(fontforge.unicodeFromName(charto)).decode('utf-8').split()
-    uai = ua.index(u'≍') if u'≍' in ua else -1
-    if uai >= 0 and ua[uai+1] == '0069' and (ua[uai+2] in ['0' + format(i, 'X') for i in range(0x300, 0x314+1)]):
-        ua[uai+1] = '0131'  # i to dotlessi
-    if uai >= 0 and ua[uai+1] == '006A' and (ua[uai+2] in ['0' + format(i, 'X') for i in range(0x300, 0x314+1)]):
-        ua[uai+1] = '0237'  # j to dotlessj
-    if uai >= 0 and ua[uai+2] == '030C' and (ua[uai+1] in ['0064', '004C', '006C', '0074']):
-        ua[uai+2] = '0315'  # caron to comma above right
-    if uai >= 0 and ua[uai+2] == '0327' and (ua[uai+1] == '0067'):
-        ua[uai+2] = '0312'  # cedilla to turned comma above
-    elif uai >= 0 and ua[uai+2] == '0327' and not (ua[uai+1] in ['0043', '0063', '0045', '0065', '0053', '0073', '0054', '0074']):
-        ua[uai+2] = '0326'  # cedilla to comma below
+    if sys.version_info.major == 2:
+        ua = unicodedata.decomposition(unichr(fontforge.unicodeFromName(charto))).decode('utf-8').split()
+    else:
+        ua = unicodedata.decomposition(chr(fontforge.unicodeFromName(charto))).decode('utf-8').split()
     d = {
-        'Oslash': [u'≍', '004F', '0338'],
-        'oslash': [u'≍', '006F', '0337'],
+        'Oslash': ['004F', '0338'],
+        'oslash': ['006F', '0337'],
     }
     if charto in d:
         ua = d[charto]
-        uai = 0
-    if uai < 0:
+    if len(ua) <= 0:
         return
-    charbase = fontforge.nameFromUnicode(int(ua[uai+1], base=16))
-    characcent = fontforge.nameFromUnicode(int(ua[uai+2], base=16))
+    if ua[0] == '<compat>':
+        return
+    if ua[0] == '0069' and (ua[1] in ['0' + format(i, 'X') for i in range(0x300, 0x314+1)]):
+        ua[0] = '0131'  # i to dotlessi
+    if ua[0] == '006A' and (ua[1] in ['0' + format(i, 'X') for i in range(0x300, 0x314+1)]):
+        ua[0] = '0237'  # j to dotlessj
+    if ua[1] == '030C' and (ua[0] in ['0064', '004C', '006C', '0074']):
+        ua[1] = '0315'  # caron to comma above right
+    if ua[1] == '0327' and (ua[0] == '0067'):
+        ua[1] = '0312'  # cedilla to turned comma above
+    elif ua[1] == '0327' and not (ua[0] in ['0043', '0063', '0045', '0065', '0053', '0073', '0054', '0074']):
+        ua[1] = '0326'  # cedilla to comma below
+    charbase = fontforge.nameFromUnicode(int(ua[0], base=16))
+    characcent = fontforge.nameFromUnicode(int(ua[1], base=16))
     if not font.__contains__(charbase) or not font.__contains__(characcent):
+        #print('not match:' + str([charto] + ua))
         return
     c = font.createMappedChar(charto)
     
