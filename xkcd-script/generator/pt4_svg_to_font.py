@@ -39,7 +39,7 @@ def basic_font():
     font.familyname = font.fontname = 'XKCD'
     font.encoding = "UnicodeFull"
 
-    font.version = '1.0';
+    font.version = '1.080';
     font.weight = 'Regular';
     font.fontname = 'xkcdScript'
     font.familyname = 'xkcd Script'
@@ -57,6 +57,14 @@ def basic_font():
                                                        [['latn',
                                                          ['dflt']]]]])
     font.addLookupSubtable('ligatures', 'liga')
+
+    font.addLookup('contextual', 'gsub_contextchain', (), [['calt',
+                                                            [['latn',
+                                                              ['dflt']]]]])
+    font.addLookup('subst_after_T', 'gsub_single', (), [['ss01',
+                                                         [['latn',
+                                                           ['dflt']]]]])
+    font.addLookupSubtable('subst_after_T', 'ss01')
 
     font.addLookup('anchors', 'gpos_mark2base', (), [['mark',
                                                       [['latn',
@@ -689,18 +697,19 @@ def autokern(font):
     all_chars = caps + lower
     
     accented = [name for name in all_glyphs if len(name) > 3 and name[1:] in ['grave', 'acute', 'circumflex', 'tilde', 'dieresis', 'ring', 'cedilla', 'macron', 'caron', 'hungarumlaut', 'dotaccent', 'breve', 'ogonek']]
+    variants = [name for name in all_glyphs if len(name) > 3 and name[1] == '.' and name[2:] in ['sc', 'ss01']]
     lvbar = list('BDEFHIKLMNPRbhklmnr')
-    lvbar = lvbar + [name for name in ligatures if name[0] in lvbar] + [name for name in accented if name[0] in lvbar]
+    lvbar = lvbar + [name for name in ligatures if name[0] in lvbar] + [name for name in accented if name[0] in lvbar] + [name for name in variants if name[0] in lvbar]
     lbowl = list('ACGOQUacdeoqyu')
-    lbowl = lbowl + [name for name in ligatures if name[0] in lbowl] + [name for name in accented if name[0] in lbowl]
+    lbowl = lbowl + [name for name in ligatures if name[0] in lbowl] + [name for name in accented if name[0] in lbowl] + [name for name in variants if name[0] in lbowl]
     lcmplx = list('JSTVWXYZfgijpstvwxz')
-    lcmplx = lcmplx + [name for name in ligatures if name[0] in lcmplx] + [name for name in accented if name[0] in lcmplx]
+    lcmplx = lcmplx + [name for name in ligatures if name[0] in lcmplx] + [name for name in accented if name[0] in lcmplx] + [name for name in variants if name[0] in lcmplx]
     rvbar = list('HIMNdhlmn')
-    rvbar = rvbar + [name for name in ligatures if name[-1] in rvbar] + [name for name in accented if name[0] in rvbar]
+    rvbar = rvbar + [name for name in ligatures if name[-1] in rvbar] + [name for name in accented if name[0] in rvbar] + [name for name in variants if name[0] in rvbar]
     rbowl = list('ABDOSUbgjopsuy')
-    rbowl = rbowl + [name for name in ligatures if name[-1] in rbowl] + [name for name in accented if name[0] in rbowl]
+    rbowl = rbowl + [name for name in ligatures if name[-1] in rbowl] + [name for name in accented if name[0] in rbowl] + [name for name in variants if name[0] in rbowl]
     rcmplx = list('CEFGJKLPQRTVWXYZacefikqrtvwxz')
-    rcmplx = rcmplx + [name for name in ligatures if name[-1] in rcmplx] + [name for name in accented if name[0] in rcmplx]
+    rcmplx = rcmplx + [name for name in ligatures if name[-1] in rcmplx] + [name for name in accented if name[0] in rcmplx] + [name for name in variants if name[0] in rcmplx]
     
     t = psMat.translate(0, -30)
     font.__getitem__('T').transform(t)
@@ -722,20 +731,24 @@ def autokern(font):
     for char, kern in [('D', -60), ('F', -60), ('G', -60), ('J', -60), ('O', -60), ('P', -60), ('T', -60), ('V', -60), ('W', -60), ('Y', -60), ('T_T', -60), ('e', -60), ('f', -60), ('o', -60), ('p', -60), ('r', -60), ('v', -60)]:
         font.__getitem__(char).addPosSub('kern', charname(','), kern)
         font.__getitem__(char).addPosSub('kern', charname('.'), kern)
+    for char, kern in [('U.ss01', -40), ('H.ss01', -80), ('I.ss01', -40), ('W.ss01', -80), ('Y.ss01', -80)]:
+        font.__getitem__('T').addPosSub('kern', char, kern)
+        font.__getitem__('T_T').addPosSub('kern', char, kern)
     
     # ascending order in 'separation.'
     font.autoKern('kern', 30, ['C'], all_chars, minKern=30)
-    font.autoKern('kern', 60, ['r'], lower, minKern=30, onlyCloser=True)
+    font.autoKern('kern', 60, ['r'], all_chars, minKern=30, onlyCloser=True)
     font.autoKern('kern', 80, ['R', 'C_R', 'E_R', 'R_R', 'X'], all_chars, minKern=30, onlyCloser=True)
     font.autoKern('kern', 80, all_chars, ['X', 'f', 't', 't_t'], minKern=30, onlyCloser=True)
     font.autoKern('kern', 90, all_chars, ['g'], minKern=30, onlyCloser=True)
     font.autoKern('kern', 90, ['V', 'v'], all_chars, minKern=30, onlyCloser=True)
     font.autoKern('kern', 100, ['K', 'k'], all_chars, minKern=30, onlyCloser=True)
-    font.autoKern('kern', 120, all_chars, ['T', 'T_O', 'T_T', 'Y', 'Z'], minKern=30, onlyCloser=True)
+    font.autoKern('kern', 120, all_chars, ['T', 'Y', 'Z'], minKern=30, onlyCloser=True)
     font.autoKern('kern', 120, ['Y', 'Z', 'P'], all_chars, minKern=30, onlyCloser=True)
-    font.autoKern('kern', 130, ['J', 'f'], all_chars, minKern=30, onlyCloser=True)
-    font.autoKern('kern', 140, ['r_r'], lower, minKern=30, onlyCloser=True)
-    font.autoKern('kern', 150, ['T', 'F'], all_chars, minKern=30, onlyCloser=True)
+    font.autoKern('kern', 130, ['J', 'T', 'f'], all_chars, minKern=30, onlyCloser=True)
+    font.autoKern('kern', 130, all_chars, ['T_O', 'T_T'], minKern=30, onlyCloser=True)
+    font.autoKern('kern', 140, ['r_r'], all_chars, minKern=30, onlyCloser=True)
+    font.autoKern('kern', 150, ['F'], all_chars, minKern=30, onlyCloser=True)
     font.autoKern('kern', 180, all_chars, ['j'], minKern=30, onlyCloser=True)
     font.autoKern('kern', 200, ['T_T'], all_chars, minKern=30, onlyCloser=True)
     
@@ -745,15 +758,17 @@ def autokern(font):
     font.autoKern('kern', 60, ['E', 'E_E'], ['V', 'v'], touch=True)
     font.autoKern('kern', 80, ['E', 'E_E'], ['j'], touch=True)
     font.autoKern('kern', 70, ['a', 'G'], ['t', 't_t'], touch=True)
-    font.autoKern('kern', 30, ['i'], ['f', 't'], touch=True)
+    font.autoKern('kern', 30, ['i', 'r_i'], ['f', 't'], touch=True)
     font.autoKern('kern', 60, ['X', 'Z'], ['f', 't', 't_t'], touch=True)
     font.autoKern('kern', 60, ['r'], ['T', 'T_O', 'T_T', 'X', 'j'], touch=True)
     font.autoKern('kern', 100, ['r_r'], ['T', 'T_O', 'T_T', 'X', 'j'], touch=True)
     font.autoKern('kern', 60, ['P'], ['g'], touch=True)
     font.autoKern('kern', 40, ['C'], ['V', 'v'], touch=True)
+    font.autoKern('kern', 140, ['T'], ['V', 'v'], touch=True)
     font.autoKern('kern', 40, ['V', 'v'], ['J'], touch=True)
     font.autoKern('kern', 150, ['F'], ['z'], touch=True)
     font.autoKern('kern', 30, ['r'], ['i'], touch=True)
+    font.__getitem__('T_T').addPosSub('kern', 'O', -70)
     
     t = psMat.translate(0, 30)
     font.__getitem__('T').transform(t)
@@ -818,8 +833,14 @@ for line, position, bbox, fname, chars in characters:
     _, ymin, _, ymax = c.boundingBox()
     if line == 0:
         weight_glyph(c, 10)
+    if chars == ('U', '.', 's', 's', '0', '1'):
+        c.transform(psMat.scale(0.9))
+        weight_glyph(c, 8)
     if chars == ('I', '.', 's', 'c'):
-        c.transform(psMat.translate(0, -20))
+        c.transform(psMat.translate(0, -30))
+    if chars == ('I', '.', 's', 's', '0', '1'):
+        c.transform(psMat.translate(0, -40))
+        rotate_glyph(c, -2)
     if chars == ('|',):
         c.transform(psMat.compose(psMat.scale(1, 1.3), psMat.translate(0, -100)))
     if chars == ('-',) or chars == (u'‐',):
@@ -850,6 +871,22 @@ for line, position, bbox, fname, chars in characters:
 
 c = font.createMappedChar(32)
 c.width = 256
+
+c = font.createChar(-1, 'W.ss01')
+c.width = font.__getitem__('W').width
+c.foreground = font.__getitem__('W').foreground.dup()
+c.transform(psMat.translate(0, -20))
+c = font.createChar(-1, 'Y.ss01')
+c.foreground = font.__getitem__('Y').foreground.dup()
+rotate_and_onto_baseline(c, 5)
+c.transform(psMat.translate(0, -20))
+font.__getitem__('U').addPosSub('ss01', 'U.ss01')
+font.__getitem__('H').addPosSub('ss01', 'H.ss01')
+font.__getitem__('I').addPosSub('ss01', 'I.ss01')
+font.__getitem__('W').addPosSub('ss01', 'W.ss01')
+font.__getitem__('Y').addPosSub('ss01', 'Y.ss01')
+font.addContextualSubtable('contextual', 'calt', 'coverage', '[T] | [H I U W Y] @<subst_after_T> |')
+
 
 makeaccent(font)
 autokern(font)
