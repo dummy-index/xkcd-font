@@ -5,7 +5,7 @@ FamilyName: xkcd Script
 Weight: Regular
 Copyright: Copyright (c) ipython/xkcd-font contributors, Creative Commons Attribution-NonCommercial 3.0 License
 UComments: "Created with FontForge (http://fontforge.org)"
-Version: 1.080
+Version: 1.0-d081
 ItalicAngle: 0
 UnderlinePosition: -102.4
 UnderlineWidth: 51.2
@@ -15,7 +15,7 @@ InvalidEm: 0
 LayerCount: 2
 Layer: 0 0 "Back" 1
 Layer: 1 0 "Fore" 0
-XUID: [1021 318 1697159594 12206047]
+XUID: [1021 544 -111758307 8433865]
 UniqueID: -1
 StyleMap: 0x0000
 FSType: 0
@@ -54,8 +54,9 @@ OS2SupYOff: 410
 OS2StrikeYSize: 42
 OS2StrikeYPos: 221
 OS2CodePages: 2000009f.00000000
-Lookup: 1 0 0 "subst_after_T" { "ss01"  } ['ss01' ('latn' <'dflt' > ) ]
-Lookup: 6 0 0 "contextual" { "calt"  } ['calt' ('latn' <'dflt' > ) ]
+Lookup: 3 0 0 "'aalt' Access All Alternates in Latin lookup 0" { "'aalt' Access All Alternates in Latin lookup 0 subtable"  } ['aalt' ('latn' <'dflt' > ) ]
+Lookup: 6 0 0 "contextual" { "calt"  } ['dlig' ('latn' <'dflt' > ) ]
+Lookup: 1 0 0 "subst_after_T" { "after_T"  } []
 Lookup: 4 0 1 "ligatures" { "liga"  } ['liga' ('latn' <'dflt' > ) ]
 Lookup: 258 0 0 "kerning" { "kern"  "kern0"  } ['kern' ('latn' <'dflt' > ) ]
 Lookup: 258 0 0 "sideaccents" { "sacc"  } ['mark' ('latn' <'dflt' > ) ]
@@ -63,17 +64,17 @@ Lookup: 260 0 0 "anchors" { "dlowerrightend"  "dupperright"  "dbottom"  "dtop"  
 Lookup: 262 0 0 "mkmk" { "dtop1"  } ['mkmk' ('latn' <'dflt' > ) ]
 DEI: 91125
 KernClass2: 3+ 4 "kern0"
- 210 H I M N d h l m n O_C_H O_N Igrave Iacute Icircumflex Idieresis Ntilde ntilde dcaron Hcircumflex hcircumflex Itilde Imacron Ibreve Iogonek Idotaccent lacute lcaron Nacute nacute Ncaron ncaron H.ss01 I.ss01 I.sc
- 628 A B D O S U b g j o p s u y c_o o_o E_A C_O L_B L_A C_A P_S T_O Ohungarumlaut Ograve Aring Udieresis Agrave Aacute Acircumflex Atilde Adieresis Oacute Ocircumflex Otilde Odieresis Ugrave Uacute Ucircumflex ograve oacute ocircumflex otilde odieresis ugrave uacute ucircumflex udieresis yacute ydieresis Amacron Abreve Aogonek Dcaron gcircumflex gbreve gdotaccent jcircumflex Omacron omacron Obreve obreve ohungarumlaut Sacute sacute Scircumflex scircumflex Scedilla scedilla Scaron scaron Utilde utilde Umacron umacron Ubreve ubreve Uring uring Uhungarumlaut uhungarumlaut Uogonek uogonek ycircumflex gcaron U.ss01 O.sc U.sc A.sc
- 704 C E F G J K L P Q R T V W X Y Z a c e f i k q r t v w x z r_i t_t r_r C_R E_E T_T E_R R_R L_L Eacute Emacron Ccedilla Egrave Ecircumflex Edieresis Yacute agrave aacute acircumflex atilde adieresis aring ccedilla egrave eacute ecircumflex edieresis igrave iacute icircumflex idieresis amacron abreve aogonek Cacute cacute Ccircumflex ccircumflex Cdotaccent cdotaccent Ccaron ccaron emacron Ebreve ebreve Edotaccent edotaccent Eogonek eogonek Ecaron ecaron Gcircumflex Gbreve Gdotaccent itilde imacron ibreve iogonek Jcircumflex Lacute Lcaron Racute racute Rcaron rcaron Tcaron tcaron Wcircumflex wcircumflex Ycircumflex Ydieresis Zacute zacute Zdotaccent zdotaccent Zcaron zcaron Gcaron W.ss01 Y.ss01 E.sc
- 384 B D E F H I K L M N P R b h k l m n r r_i r_r E_A E_E L_B E_R R_R L_A L_L P_S Eacute Emacron Egrave Ecircumflex Edieresis Igrave Iacute Icircumflex Idieresis Ntilde ntilde Dcaron Ebreve Edotaccent Eogonek Ecaron Hcircumflex hcircumflex Itilde Imacron Ibreve Iogonek Idotaccent Lacute lacute Lcaron lcaron Nacute nacute Ncaron ncaron Racute racute Rcaron rcaron H.ss01 I.ss01 I.sc E.sc
- 781 A C G O Q U a c d e o q y u c_o o_o C_O C_R O_C_H O_N C_A Ohungarumlaut Ograve Aring Udieresis Agrave Aacute Acircumflex Atilde Adieresis Ccedilla Oacute Ocircumflex Otilde Odieresis Ugrave Uacute Ucircumflex agrave aacute acircumflex atilde adieresis aring ccedilla egrave eacute ecircumflex edieresis ograve oacute ocircumflex otilde odieresis ugrave uacute ucircumflex udieresis yacute ydieresis Amacron amacron Abreve abreve Aogonek aogonek Cacute cacute Ccircumflex ccircumflex Cdotaccent cdotaccent Ccaron ccaron dcaron emacron ebreve edotaccent eogonek ecaron Gcircumflex Gbreve Gdotaccent Omacron omacron Obreve obreve ohungarumlaut Utilde utilde Umacron umacron Ubreve ubreve Uring uring Uhungarumlaut uhungarumlaut Uogonek uogonek ycircumflex Gcaron U.ss01 O.sc U.sc A.sc
- 377 J S T V W X Y Z f g i j p s t v w x z t_t T_T T_O Yacute igrave iacute icircumflex idieresis gcircumflex gbreve gdotaccent itilde imacron ibreve iogonek Jcircumflex jcircumflex Sacute sacute Scircumflex scircumflex Scedilla scedilla Scaron scaron Tcaron tcaron Wcircumflex wcircumflex Ycircumflex Ydieresis Zacute zacute Zdotaccent zdotaccent Zcaron zcaron gcaron W.ss01 Y.ss01
+ 210 H I M N d h l m n O_C_H O_N Igrave Iacute Icircumflex Idieresis Ntilde ntilde dcaron Hcircumflex hcircumflex Itilde Imacron Ibreve Iogonek Idotaccent lacute lcaron Nacute nacute Ncaron ncaron H.cv01 I.cv01 I.sc
+ 628 A B D O S U b g j o p s u y c_o o_o E_A C_O L_B L_A C_A P_S T_O Ohungarumlaut Ograve Aring Udieresis Agrave Aacute Acircumflex Atilde Adieresis Oacute Ocircumflex Otilde Odieresis Ugrave Uacute Ucircumflex ograve oacute ocircumflex otilde odieresis ugrave uacute ucircumflex udieresis yacute ydieresis Amacron Abreve Aogonek Dcaron gcircumflex gbreve gdotaccent jcircumflex Omacron omacron Obreve obreve ohungarumlaut Sacute sacute Scircumflex scircumflex Scedilla scedilla Scaron scaron Utilde utilde Umacron umacron Ubreve ubreve Uring uring Uhungarumlaut uhungarumlaut Uogonek uogonek ycircumflex gcaron U.cv01 O.sc U.sc A.sc
+ 704 C E F G J K L P Q R T V W X Y Z a c e f i k q r t v w x z r_i t_t r_r C_R E_E T_T E_R R_R L_L Eacute Emacron Ccedilla Egrave Ecircumflex Edieresis Yacute agrave aacute acircumflex atilde adieresis aring ccedilla egrave eacute ecircumflex edieresis igrave iacute icircumflex idieresis amacron abreve aogonek Cacute cacute Ccircumflex ccircumflex Cdotaccent cdotaccent Ccaron ccaron emacron Ebreve ebreve Edotaccent edotaccent Eogonek eogonek Ecaron ecaron Gcircumflex Gbreve Gdotaccent itilde imacron ibreve iogonek Jcircumflex Lacute Lcaron Racute racute Rcaron rcaron Tcaron tcaron Wcircumflex wcircumflex Ycircumflex Ydieresis Zacute zacute Zdotaccent zdotaccent Zcaron zcaron Gcaron W.cv01 Y.cv01 E.sc
+ 384 B D E F H I K L M N P R b h k l m n r r_i r_r E_A E_E L_B E_R R_R L_A L_L P_S Eacute Emacron Egrave Ecircumflex Edieresis Igrave Iacute Icircumflex Idieresis Ntilde ntilde Dcaron Ebreve Edotaccent Eogonek Ecaron Hcircumflex hcircumflex Itilde Imacron Ibreve Iogonek Idotaccent Lacute lacute Lcaron lcaron Nacute nacute Ncaron ncaron Racute racute Rcaron rcaron H.cv01 I.cv01 I.sc E.sc
+ 781 A C G O Q U a c d e o q y u c_o o_o C_O C_R O_C_H O_N C_A Ohungarumlaut Ograve Aring Udieresis Agrave Aacute Acircumflex Atilde Adieresis Ccedilla Oacute Ocircumflex Otilde Odieresis Ugrave Uacute Ucircumflex agrave aacute acircumflex atilde adieresis aring ccedilla egrave eacute ecircumflex edieresis ograve oacute ocircumflex otilde odieresis ugrave uacute ucircumflex udieresis yacute ydieresis Amacron amacron Abreve abreve Aogonek aogonek Cacute cacute Ccircumflex ccircumflex Cdotaccent cdotaccent Ccaron ccaron dcaron emacron ebreve edotaccent eogonek ecaron Gcircumflex Gbreve Gdotaccent Omacron omacron Obreve obreve ohungarumlaut Utilde utilde Umacron umacron Ubreve ubreve Uring uring Uhungarumlaut uhungarumlaut Uogonek uogonek ycircumflex Gcaron U.cv01 O.sc U.sc A.sc
+ 377 J S T V W X Y Z f g i j p s t v w x z t_t T_T T_O Yacute igrave iacute icircumflex idieresis gcircumflex gbreve gdotaccent itilde imacron ibreve iogonek Jcircumflex jcircumflex Sacute sacute Scircumflex scircumflex Scedilla scedilla Scaron scaron Tcaron tcaron Wcircumflex wcircumflex Ycircumflex Ydieresis Zacute zacute Zdotaccent zdotaccent Zcaron zcaron gcaron W.cv01 Y.cv01
  0 {} 0 {} -20 {} -30 {} 0 {} -20 {} -25 {} -30 {} 0 {} -30 {} -30 {} -30 {}
 ChainSub2: coverage "calt" 0 0 0 1
  1 1 0
   Coverage: 9 H I U W Y
-  BCoverage: 1 T
+  BCoverage: 7 J T T_T
  1
   SeqLookup: 0 "subst_after_T"
 EndFPST
@@ -84,7 +85,7 @@ DisplaySize: -48
 AntiAlias: 1
 FitToEm: 0
 BeginPrivate: 1
-BlueValues 17 [409 450 573 613]
+BlueValues 9 [409 450]
 EndPrivate
 AnchorClass2: "top1" "dtop1" "lowerrightend" "dlowerrightend" "upperright" "dupperright" "bottom" "dbottom" "top" "dtop"
 BeginChars: 1114145 409
@@ -154,7 +155,7 @@ SplineSet
  248 275 235 295 230 303 c 0
  228 308 225 313 223 314 c 0
 EndSplineSet
-Kerns2: 39 -88 "kern" 10 -83 "kern" 25 -64 "kern" 87 -96 "kern" 77 -84 "kern" 58 -140 "kern" 52 -114 "kern" 22 -53 "kern" 21 -70 "kern"
+Kerns2: 39 -88 "kern" 10 -83 "kern" 25 -64 "kern" 87 -96 "kern" 77 -84 "kern" 58 -140 "kern" 52 -114 "kern" 22 -53 "kern" 21 -70 "kern" 68 -61 "kern"
 Comment: "char_L3_P6_x1253_y2085_x1446_y2300_YQ+AD0APQAA.svg"
 EndChar
 
@@ -256,7 +257,7 @@ SplineSet
  37 561 38 565 44 587 c 0
  49 605 51 612 55 615 c 0
 EndSplineSet
-Kerns2: 25 -42 "kern" 22 -47 "kern" 39 -50 "kern" 21 -42 "kern" 10 -51 "kern" 181 80 "sacc"
+Kerns2: 25 -42 "kern" 22 -47 "kern" 39 -50 "kern" 21 -42 "kern" 10 -51 "kern" 68 -57 "kern" 181 80 "sacc"
 Comment: "char_L3_P32_x6375_y1972_x6435_y2311_bA+AD0APQAA.svg"
 EndChar
 
@@ -328,7 +329,7 @@ SplineSet
  75 386 l 1
  89 410 105 427 122 439 c 0
 EndSplineSet
-Kerns2: 25 -38 "kern" 87 -70 "kern" 77 -63 "kern" 58 -86 "kern" 52 -86 "kern" 39 -31 "kern"
+Kerns2: 25 -38 "kern" 87 -70 "kern" 77 -63 "kern" 58 -86 "kern" 52 -86 "kern" 39 -31 "kern" 68 -37 "kern"
 Comment: "char_L3_P27_x5121_y2060_x5396_y2302_bQ+AD0APQAA.svg"
 EndChar
 
@@ -385,7 +386,7 @@ SplineSet
  20 288 20 295 20 301 c 0
  20 368 21 362 41 367 c 0
 EndSplineSet
-Kerns2: 25 -43 "kern" 87 -75 "kern" 77 -65 "kern" 58 -110 "kern" 52 -92 "kern" 39 -64 "kern" 21 -45 "kern" 10 -56 "kern"
+Kerns2: 25 -43 "kern" 87 -75 "kern" 77 -65 "kern" 58 -110 "kern" 52 -92 "kern" 39 -64 "kern" 21 -45 "kern" 10 -56 "kern" 68 -30 "kern"
 Comment: "char_L3_P19_x3579_y2073_x3746_y2315_bg+AD0APQAA.svg"
 EndChar
 
@@ -440,7 +441,7 @@ SplineSet
  198 326 196 330 192 332 c 1
  191 330 187 329 182 329 c 0
 EndSplineSet
-Kerns2: 25 -54 "kern" 87 -85 "kern" 77 -80 "kern" 58 -114 "kern" 52 -99 "kern" 57 -67 "kern" 39 -60 "kern" 10 -51 "kern" 131 -60 "kern" 132 -60 "kern"
+Kerns2: 25 -54 "kern" 87 -85 "kern" 77 -80 "kern" 58 -114 "kern" 52 -99 "kern" 57 -67 "kern" 39 -60 "kern" 10 -51 "kern" 68 -48 "kern" 131 -60 "kern" 132 -60 "kern"
 Comment: "char_L3_P9_x1722_y2080_x1906_y2304_bw+AD0APQAA.svg"
 EndChar
 
@@ -513,7 +514,7 @@ SplineSet
  326 237 316 285 304 306 c 0
  295 325 293 329 280 341 c 0
 EndSplineSet
-Kerns2: 25 -76 "kern" 87 -85 "kern" 77 -82 "kern" 58 -113 "kern" 52 -100 "kern" 22 -42 "kern" 57 -59 "kern" 39 -61 "kern" 10 -51 "kern" 131 -60 "kern" 132 -60 "kern"
+Kerns2: 25 -76 "kern" 87 -85 "kern" 77 -82 "kern" 58 -113 "kern" 52 -100 "kern" 22 -42 "kern" 57 -59 "kern" 39 -61 "kern" 10 -51 "kern" 68 -41 "kern" 131 -60 "kern" 132 -60 "kern"
 Comment: "char_L3_P28_x5401_y2065_x5605_y2413_cA+AD0APQAA.svg"
 EndChar
 
@@ -574,7 +575,7 @@ SplineSet
  156 295 132 261 112 226 c 0
  101 207 94 179 94 152 c 0
 EndSplineSet
-Kerns2: 87 -91 "kern" 77 -85 "kern" 58 -120 "kern" 52 -104 "kern" 57 -69 "kern" 39 -72 "kern" 10 -57 "kern"
+Kerns2: 87 -91 "kern" 77 -85 "kern" 58 -120 "kern" 52 -104 "kern" 57 -69 "kern" 39 -72 "kern" 10 -57 "kern" 68 -64 "kern"
 Comment: "char_L0_P16_x6184_y171_x6448_y596_cQ+AD0APQAA.svg"
 EndChar
 
@@ -624,7 +625,7 @@ SplineSet
  66 376 71 379 77 384 c 0
  94 398 126 412 165 421 c 0
 EndSplineSet
-Kerns2: 24 -44 "kern" 87 -91 "kern" 77 -92 "kern" 57 -77 "kern" 52 -93 "kern" 25 -94 "kern" 59 -175 "kern" 58 -85 "kern" 22 -100 "kern" 68 -285 "kern" 42 -37 "kern" 41 -40 "kern" 37 -55 "kern" 20 -61 "kern" 19 -88 "kern" 18 -55 "kern" 16 -36 "kern" 7 -85 "kern" 5 -66 "kern" 0 -91 "kern" 131 -60 "kern" 132 -60 "kern"
+Kerns2: 24 -44 "kern" 87 -91 "kern" 77 -92 "kern" 68 -190 "kern" 59 -136 "kern" 57 -77 "kern" 52 -93 "kern" 25 -94 "kern" 58 -85 "kern" 22 -100 "kern" 42 -37 "kern" 41 -40 "kern" 37 -55 "kern" 20 -61 "kern" 19 -88 "kern" 18 -55 "kern" 16 -36 "kern" 7 -85 "kern" 5 -66 "kern" 0 -91 "kern" 131 -60 "kern" 132 -60 "kern"
 Comment: "char_L3_P3_x679_y2075_x881_y2305_cg+AD0APQAA.svg"
 EndChar
 
@@ -692,7 +693,7 @@ SplineSet
  250 406 245 402 240 390 c 0
  231 374 230 373 223 371 c 0
 EndSplineSet
-Kerns2: 25 -62 "kern" 87 -89 "kern" 77 -85 "kern" 58 -126 "kern" 52 -108 "kern" 57 -64 "kern" 39 -78 "kern" 21 -53 "kern" 10 -67 "kern"
+Kerns2: 25 -62 "kern" 87 -89 "kern" 77 -85 "kern" 58 -126 "kern" 52 -108 "kern" 57 -64 "kern" 39 -78 "kern" 21 -53 "kern" 10 -67 "kern" 68 -43 "kern"
 Comment: "char_L3_P29_x5615_y2062_x5788_y2292_cw+AD0APQAA.svg"
 EndChar
 
@@ -757,7 +758,7 @@ SplineSet
  126 34 97 78 91 121 c 0
  85 145 80 183 80 212 c 0
 EndSplineSet
-Kerns2: 25 -113 "kern" 87 -110 "kern" 77 -102 "kern" 58 -104 "kern" 52 -126 "kern" 22 -101 "kern" 39 -37 "kern" 21 -58 "kern" 10 -42 "kern"
+Kerns2: 25 -113 "kern" 87 -110 "kern" 77 -102 "kern" 58 -104 "kern" 52 -126 "kern" 22 -101 "kern" 39 -37 "kern" 21 -58 "kern" 10 -42 "kern" 68 -37 "kern"
 Comment: "char_L3_P7_x1444_y1979_x1610_y2302_dA+AD0APQAA.svg"
 EndChar
 
@@ -824,7 +825,7 @@ SplineSet
  137 299 118 252 114 228 c 0
  113 220 98 160 98 149 c 0
 EndSplineSet
-Kerns2: 25 -64 "kern" 87 -91 "kern" 77 -86 "kern" 58 -110 "kern" 52 -108 "kern" 57 -72 "kern" 39 -37 "kern" 10 -32 "kern"
+Kerns2: 25 -64 "kern" 87 -91 "kern" 77 -86 "kern" 58 -110 "kern" 52 -108 "kern" 57 -72 "kern" 39 -37 "kern" 10 -32 "kern" 68 -47 "kern"
 Comment: "char_L2_P17_x3532_y1375_x3704_y1695_Yg+AD0APQAA.svg"
 EndChar
 
@@ -880,7 +881,7 @@ SplineSet
  72 410 77 415 78 415 c 2
  79 414 l 1
 EndSplineSet
-Kerns2: 25 -41 "kern" 87 -72 "kern" 77 -68 "kern" 58 -82 "kern" 52 -87 "kern" 57 -54 "kern"
+Kerns2: 25 -41 "kern" 87 -72 "kern" 77 -68 "kern" 58 -82 "kern" 52 -87 "kern" 57 -54 "kern" 68 -43 "kern"
 Comment: "char_L3_P14_x2656_y2077_x2847_y2298_dQ+AD0APQAA.svg"
 EndChar
 
@@ -994,7 +995,7 @@ SplineSet
  343 196 346 212 347 249 c 0
  350 300 352 327 353 388 c 0
 EndSplineSet
-Kerns2: 25 -38 "kern" 77 -37 "kern" 58 -36 "kern" 52 -86 "kern" 57 -63 "kern"
+Kerns2: 25 -38 "kern" 77 -37 "kern" 58 -36 "kern" 52 -86 "kern" 57 -63 "kern" 68 -55 "kern"
 Comment: "char_L2_P4_x946_y1455_x1173_y1715_dw+AD0APQAA.svg"
 EndChar
 
@@ -1047,7 +1048,7 @@ SplineSet
  82 28 67 18 56 11 c 0
  55 10 54 10 53 10 c 0
 EndSplineSet
-Kerns2: 25 -87 "kern" 87 -114 "kern" 77 -97 "kern" 58 -129 "kern" 52 -132 "kern" 22 -91 "kern" 39 -67 "kern" 21 -60 "kern" 10 -66 "kern"
+Kerns2: 25 -87 "kern" 87 -114 "kern" 77 -97 "kern" 58 -129 "kern" 52 -132 "kern" 22 -91 "kern" 39 -67 "kern" 21 -60 "kern" 10 -66 "kern" 68 -75 "kern"
 Comment: "char_L0_P23_x9273_y169_x9492_y431_eA+AD0APQAA.svg"
 EndChar
 
@@ -1104,7 +1105,7 @@ SplineSet
  333 359 350 347 350 331 c 0
  350 330 350 330 350 329 c 0
 EndSplineSet
-Kerns2: 87 -70 "kern" 77 -61 "kern" 58 -111 "kern" 52 -86 "kern" 39 -59 "kern" 10 -46 "kern"
+Kerns2: 87 -70 "kern" 77 -61 "kern" 58 -111 "kern" 52 -86 "kern" 39 -59 "kern" 10 -46 "kern" 68 -32 "kern"
 Comment: "char_L0_P24_x9737_y197_x9980_y534_eQ+AD0APQAA.svg"
 EndChar
 
@@ -1153,7 +1154,7 @@ SplineSet
  361 13 355 11 348 11 c 0
  340 11 331 13 319 16 c 0
 EndSplineSet
-Kerns2: 25 -79 "kern" 87 -101 "kern" 77 -91 "kern" 58 -111 "kern" 52 -118 "kern" 22 -76 "kern"
+Kerns2: 25 -79 "kern" 87 -101 "kern" 77 -91 "kern" 58 -111 "kern" 52 -118 "kern" 22 -76 "kern" 68 -59 "kern"
 Comment: "char_L0_P25_x10220_y180_x10448_y423_eg+AD0APQAA.svg"
 EndChar
 
@@ -1206,7 +1207,7 @@ SplineSet
  62 329 88 381 130 426 c 0
  142 439 178 466 184 466 c 0
 EndSplineSet
-Kerns2: 25 -99 "kern" 87 -89 "kern" 77 -93 "kern" 58 -91 "kern" 52 -127 "kern" 22 -91 "kern" 39 -36 "kern" 10 -34 "kern"
+Kerns2: 25 -99 "kern" 87 -89 "kern" 77 -93 "kern" 58 -91 "kern" 52 -127 "kern" 22 -91 "kern" 39 -36 "kern" 10 -34 "kern" 68 -38 "kern"
 Comment: "char_L3_P25_x4749_y2050_x4923_y2291_Yw+AD0APQAA.svg"
 EndChar
 
@@ -1268,7 +1269,7 @@ SplineSet
  290 127 l 1
  290 136 l 2
 EndSplineSet
-Kerns2: 25 -32 "kern" 22 -30 "kern" 57 -31 "kern" 181 80 "sacc"
+Kerns2: 25 -32 "kern" 22 -30 "kern" 57 -31 "kern" 68 -48 "kern" 181 80 "sacc"
 Comment: "char_L2_P7_x1559_y1354_x1764_y1698_ZA+AD0APQAA.svg"
 EndChar
 
@@ -1334,7 +1335,7 @@ SplineSet
  312 292 315 305 315 318 c 0
  315 327 314 337 311 343 c 1
 EndSplineSet
-Kerns2: 25 -74 "kern" 87 -99 "kern" 77 -99 "kern" 59 -71 "kern" 58 -91 "kern" 52 -115 "kern" 22 -58 "kern" 57 -101 "kern" 131 -60 "kern" 132 -60 "kern"
+Kerns2: 25 -74 "kern" 87 -99 "kern" 77 -99 "kern" 59 -71 "kern" 58 -91 "kern" 52 -115 "kern" 22 -58 "kern" 57 -101 "kern" 68 -113 "kern" 131 -60 "kern" 132 -60 "kern"
 Comment: "char_L3_P4_x863_y2065_x1062_y2296_ZQ+AD0APQAA.svg"
 EndChar
 
@@ -1401,7 +1402,7 @@ SplineSet
  99 291 98 302 97 303 c 0
  96 304 83 304 68 304 c 0
 EndSplineSet
-Kerns2: 25 -96 "kern" 85 -53 "kern" 84 -39 "kern" 75 -50 "kern" 74 -40 "kern" 68 -90 "kern" 65 -33 "kern" 64 -30 "kern" 61 -52 "kern" 55 -83 "kern" 49 -39 "kern" 47 -43 "kern" 42 -68 "kern" 41 -113 "kern" 40 -98 "kern" 39 -82 "kern" 38 -99 "kern" 37 -120 "kern" 24 -84 "kern" 22 -140 "kern" 21 -70 "kern" 20 -120 "kern" 19 -140 "kern" 18 -118 "kern" 17 -100 "kern" 16 -101 "kern" 15 -94 "kern" 14 -91 "kern" 13 -100 "kern" 12 -98 "kern" 10 -70 "kern" 9 -100 "kern" 8 -97 "kern" 7 -125 "kern" 6 -103 "kern" 5 -112 "kern" 4 -87 "kern" 3 -97 "kern" 0 -121 "kern" 131 -60 "kern" 132 -60 "kern"
+Kerns2: 24 -63 "kern" 25 -96 "kern" 85 -53 "kern" 84 -39 "kern" 75 -50 "kern" 74 -40 "kern" 68 -90 "kern" 65 -33 "kern" 64 -30 "kern" 61 -52 "kern" 55 -83 "kern" 49 -39 "kern" 47 -43 "kern" 42 -68 "kern" 41 -113 "kern" 40 -98 "kern" 39 -82 "kern" 38 -99 "kern" 37 -120 "kern" 22 -140 "kern" 21 -70 "kern" 20 -120 "kern" 19 -140 "kern" 18 -118 "kern" 17 -100 "kern" 16 -101 "kern" 15 -94 "kern" 14 -91 "kern" 13 -100 "kern" 12 -98 "kern" 10 -70 "kern" 9 -100 "kern" 8 -97 "kern" 7 -125 "kern" 6 -103 "kern" 5 -112 "kern" 4 -87 "kern" 3 -97 "kern" 0 -121 "kern" 131 -60 "kern" 132 -60 "kern"
 Comment: "char_L1_P53_x9550_y790_x9760_y1100_Zg+AD0APQAA.svg"
 EndChar
 
@@ -1487,7 +1488,7 @@ SplineSet
  307 252 308 254 308 256 c 0
  308 263 300 262 300 270 c 0
 EndSplineSet
-Kerns2: 87 -70 "kern" 77 -61 "kern" 58 -104 "kern" 52 -86 "kern" 39 -53 "kern" 10 -44 "kern"
+Kerns2: 87 -70 "kern" 77 -61 "kern" 58 -104 "kern" 52 -86 "kern" 39 -53 "kern" 10 -44 "kern" 68 -31 "kern"
 Comment: "char_L3_P5_x1006_y2079_x1245_y2430_Zw+AD0APQAA.svg"
 EndChar
 
@@ -1555,7 +1556,7 @@ SplineSet
  27 73 26 75 23 95 c 0
  21 109 20 122 20 140 c 0
 EndSplineSet
-Kerns2: 25 -51 "kern" 87 -77 "kern" 77 -70 "kern" 58 -104 "kern" 52 -95 "kern" 39 -32 "kern"
+Kerns2: 25 -51 "kern" 87 -77 "kern" 77 -70 "kern" 58 -104 "kern" 52 -95 "kern" 39 -32 "kern" 68 -31 "kern"
 Comment: "char_L2_P36_x7146_y1389_x7313_y1701_aA+AD0APQAA.svg"
 EndChar
 
@@ -1608,7 +1609,7 @@ SplineSet
  107 321 111 320 116 317 c 0
  123 313 122 309 124 302 c 0
 EndSplineSet
-Kerns2: 21 -84 "kern" 10 -63 "kern" 25 -57 "kern" 52 -36 "kern" 22 -65 "kern" 57 -66 "kern" 39 -66 "kern"
+Kerns2: 21 -84 "kern" 10 -63 "kern" 25 -57 "kern" 52 -36 "kern" 22 -65 "kern" 57 -66 "kern" 39 -66 "kern" 68 -85 "kern"
 Comment: "char_L3_P8_x1622_y2041_x1712_y2282_aQ+AD0APQAA.svg"
 EndChar
 
@@ -1664,7 +1665,7 @@ SplineSet
  161 266 161 266 161 267 c 0
  159 295 154 289 154 331 c 0
 EndSplineSet
-Kerns2: 39 -60 "kern" 10 -51 "kern"
+Kerns2: 39 -60 "kern" 10 -51 "kern" 68 -31 "kern"
 Comment: "char_L0_P9_x3083_y81_x3275_y547_ag+AD0APQAA.svg"
 EndChar
 
@@ -2545,7 +2546,7 @@ SplineSet
  532 330 530 332 528 335 c 0
  525 340 514 350 510 350 c 0
 EndSplineSet
-Kerns2: 25 -62 "kern" 87 -91 "kern" 77 -86 "kern" 58 -118 "kern" 52 -104 "kern" 22 -30 "kern" 57 -78 "kern" 39 -63 "kern" 10 -52 "kern"
+Kerns2: 25 -62 "kern" 87 -91 "kern" 77 -86 "kern" 58 -118 "kern" 52 -104 "kern" 22 -30 "kern" 57 -78 "kern" 39 -63 "kern" 10 -52 "kern" 68 -56 "kern"
 Ligature2: "liga" c o
 Comment: "char_L1_P35_x6344_y867_x6710_y1101_Y28+AD0A.svg"
 EndChar
@@ -2622,7 +2623,7 @@ SplineSet
  421 320 423 320 424 320 c 0
  452 316 458 318 460 296 c 0
 EndSplineSet
-Kerns2: 21 -84 "kern" 10 -45 "kern" 25 -82 "kern" 59 -66 "kern" 58 -30 "kern" 52 -104 "kern" 22 -99 "kern" 57 -94 "kern" 39 -34 "kern"
+Kerns2: 21 -84 "kern" 10 -45 "kern" 25 -82 "kern" 59 -66 "kern" 58 -30 "kern" 52 -104 "kern" 22 -99 "kern" 57 -94 "kern" 39 -34 "kern" 68 -113 "kern"
 Ligature2: "liga" r i
 Comment: "char_L1_P7_x1397_y853_x1663_y1101_cmk+AD0A.svg"
 EndChar
@@ -2730,7 +2731,7 @@ SplineSet
  114 423 115 423 115 426 c 0
  125 473 133 538 149 575 c 0
 EndSplineSet
-Kerns2: 25 -123 "kern" 87 -118 "kern" 77 -120 "kern" 58 -128 "kern" 52 -142 "kern" 22 -70 "kern" 57 -72 "kern" 39 -105 "kern" 21 -140 "kern" 10 -101 "kern"
+Kerns2: 25 -123 "kern" 87 -118 "kern" 77 -120 "kern" 58 -128 "kern" 52 -142 "kern" 22 -70 "kern" 57 -72 "kern" 39 -105 "kern" 21 -140 "kern" 10 -101 "kern" 68 -32 "kern"
 PairPos2: "sacc" uni0315 dx=0 dy=0 dh=0 dv=0 dx=-80 dy=0 dh=0 dv=0
 Ligature2: "liga" t t
 Comment: "char_L2_P10_x2209_y1381_x2561_y1707_dHQ+AD0A.svg"
@@ -2800,7 +2801,7 @@ SplineSet
  604 409 612 405 626 390 c 0
  635 380 640 371 640 362 c 0
 EndSplineSet
-Kerns2: 87 -90 "kern" 77 -91 "kern" 57 -62 "kern" 52 -92 "kern" 25 -96 "kern" 68 -208 "kern" 59 -178 "kern" 58 -77 "kern" 37 -45 "kern" 22 -98 "kern" 20 -52 "kern" 19 -82 "kern" 18 -39 "kern" 7 -93 "kern" 5 -51 "kern" 0 -78 "kern"
+Kerns2: 87 -90 "kern" 77 -91 "kern" 68 -174 "kern" 59 -129 "kern" 57 -62 "kern" 52 -92 "kern" 25 -96 "kern" 58 -77 "kern" 37 -45 "kern" 22 -98 "kern" 20 -52 "kern" 19 -82 "kern" 18 -39 "kern" 7 -93 "kern" 5 -51 "kern" 0 -78 "kern"
 Ligature2: "liga" r r
 Comment: "char_L2_P31_x6202_y1477_x6546_y1706_cnI+AD0A.svg"
 EndChar
@@ -2902,7 +2903,7 @@ SplineSet
  604 315 598 317 590 317 c 0
  587 317 584 317 579 316 c 0
 EndSplineSet
-Kerns2: 25 -66 "kern" 87 -94 "kern" 77 -88 "kern" 58 -142 "kern" 52 -110 "kern" 22 -32 "kern" 57 -58 "kern" 39 -82 "kern" 21 -78 "kern" 10 -70 "kern"
+Kerns2: 25 -66 "kern" 87 -94 "kern" 77 -88 "kern" 58 -142 "kern" 52 -110 "kern" 22 -32 "kern" 57 -58 "kern" 39 -82 "kern" 21 -78 "kern" 10 -70 "kern" 68 -43 "kern"
 Ligature2: "liga" o o
 Comment: "char_L3_P31_x5948_y2078_x6356_y2305_b28+AD0A.svg"
 EndChar
@@ -2959,7 +2960,7 @@ SplineSet
  321 335 309 406 307 409 c 0
  302 416 300 448 295 457 c 0
 EndSplineSet
-Kerns2: 25 -34 "kern" 58 -31 "kern" 52 -30 "kern" 39 -30 "kern"
+Kerns2: 25 -34 "kern" 58 -31 "kern" 52 -30 "kern" 39 -30 "kern" 68 -30 "kern"
 Comment: "char_L9_P33_x10020_y5328_x10220_y5618_QQ+AD0APQAA.svg"
 EndChar
 
@@ -3076,7 +3077,7 @@ SplineSet
  357 44 353 45 348 45 c 0
  318 45 287 36 245 22 c 0
 EndSplineSet
-Kerns2: 58 -122 "kern" 25 -103 "kern" 87 -162 "kern" 86 -65 "kern" 85 -58 "kern" 84 -64 "kern" 82 -48 "kern" 81 -61 "kern" 80 -54 "kern" 79 -41 "kern" 78 -62 "kern" 77 -153 "kern" 76 -39 "kern" 75 -68 "kern" 74 -88 "kern" 72 -86 "kern" 70 -81 "kern" 68 -46 "kern" 67 -51 "kern" 66 -42 "kern" 65 -94 "kern" 64 -40 "kern" 63 -51 "kern" 62 -39 "kern" 61 -68 "kern" 59 -42 "kern" 57 -47 "kern" 56 -84 "kern" 55 -144 "kern" 54 -60 "kern" 53 -68 "kern" 52 -175 "kern" 51 -79 "kern" 50 -39 "kern" 49 -97 "kern" 48 -60 "kern" 47 -73 "kern" 46 -53 "kern" 45 -50 "kern" 44 -45 "kern" 43 -65 "kern" 42 -39 "kern" 41 -58 "kern" 40 -41 "kern" 39 -125 "kern" 38 -41 "kern" 37 -59 "kern" 24 -78 "kern" 23 -43 "kern" 22 -83 "kern" 21 -133 "kern" 20 -54 "kern" 19 -51 "kern" 18 -54 "kern" 17 -53 "kern" 16 -55 "kern" 15 -50 "kern" 14 -59 "kern" 13 -108 "kern" 12 -54 "kern" 11 -40 "kern" 10 -117 "kern" 9 -57 "kern" 8 -49 "kern" 7 -50 "kern" 6 -50 "kern" 5 -44 "kern" 4 -39 "kern" 3 -39 "kern" 2 -51 "kern" 1 -41 "kern" 0 -50 "kern"
+Kerns2: 25 -103 "kern" 58 -152 "kern" 87 -162 "kern" 86 -65 "kern" 85 -58 "kern" 84 -64 "kern" 82 -48 "kern" 81 -61 "kern" 80 -54 "kern" 79 -41 "kern" 78 -62 "kern" 77 -153 "kern" 76 -39 "kern" 75 -68 "kern" 74 -88 "kern" 72 -86 "kern" 70 -81 "kern" 68 -46 "kern" 67 -51 "kern" 66 -42 "kern" 65 -94 "kern" 64 -40 "kern" 63 -51 "kern" 62 -39 "kern" 61 -68 "kern" 59 -42 "kern" 57 -47 "kern" 56 -84 "kern" 55 -144 "kern" 54 -60 "kern" 53 -68 "kern" 52 -175 "kern" 51 -79 "kern" 50 -39 "kern" 49 -97 "kern" 48 -60 "kern" 47 -73 "kern" 46 -53 "kern" 45 -50 "kern" 44 -45 "kern" 43 -65 "kern" 42 -39 "kern" 41 -58 "kern" 40 -41 "kern" 39 -125 "kern" 38 -41 "kern" 37 -59 "kern" 24 -78 "kern" 23 -43 "kern" 22 -83 "kern" 21 -133 "kern" 20 -54 "kern" 19 -51 "kern" 18 -54 "kern" 17 -53 "kern" 16 -55 "kern" 15 -50 "kern" 14 -59 "kern" 13 -108 "kern" 12 -54 "kern" 11 -40 "kern" 10 -117 "kern" 9 -57 "kern" 8 -49 "kern" 7 -50 "kern" 6 -50 "kern" 5 -44 "kern" 4 -39 "kern" 3 -39 "kern" 2 -51 "kern" 1 -41 "kern" 0 -50 "kern"
 Comment: "char_L7_P42_x9598_y3985_x9805_y4282_TA+AD0APQAA.svg"
 EndChar
 
@@ -3147,6 +3148,7 @@ SplineSet
  96 407 l 1
  97 346 l 2
 EndSplineSet
+Kerns2: 68 -50 "kern"
 Comment: "char_L7_P6_x1338_y3960_x1581_y4290_TQ+AD0APQAA.svg"
 EndChar
 
@@ -3207,7 +3209,7 @@ SplineSet
  108 40 99 37 76 34 c 0
  69 33 64 33 61 33 c 0
 EndSplineSet
-Kerns2: 25 -39 "kern" 22 -30 "kern" 57 -41 "kern" 39 -34 "kern" 10 -33 "kern"
+Kerns2: 25 -39 "kern" 22 -30 "kern" 57 -41 "kern" 39 -34 "kern" 10 -33 "kern" 68 -48 "kern"
 Comment: "char_L9_P34_x10235_y5312_x10436_y5615_Tg+AD0APQAA.svg"
 EndChar
 
@@ -3266,7 +3268,7 @@ SplineSet
  360 406 340 435 327 449 c 0
  302 472 282 488 250 491 c 0
 EndSplineSet
-Kerns2: 25 -55 "kern" 87 -36 "kern" 77 -40 "kern" 59 -54 "kern" 58 -43 "kern" 52 -61 "kern" 22 -41 "kern" 57 -94 "kern" 131 -60 "kern" 132 -60 "kern"
+Kerns2: 25 -55 "kern" 87 -36 "kern" 77 -40 "kern" 59 -54 "kern" 58 -43 "kern" 52 -61 "kern" 22 -41 "kern" 57 -94 "kern" 68 -88 "kern" 131 -60 "kern" 132 -60 "kern"
 Comment: "char_L7_P5_x1087_y3971_x1315_y4285_Tw+AD0APQAA.svg"
 EndChar
 
@@ -3580,7 +3582,7 @@ SplineSet
  100 411 99 408 99 400 c 2
  99 389 l 1
 EndSplineSet
-Kerns2: 25 -62 "kern" 87 -60 "kern" 77 -52 "kern" 58 -65 "kern" 52 -61 "kern" 57 -64 "kern" 39 -76 "kern" 21 -37 "kern" 10 -63 "kern"
+Kerns2: 25 -62 "kern" 87 -60 "kern" 77 -52 "kern" 58 -65 "kern" 52 -61 "kern" 57 -64 "kern" 39 -76 "kern" 21 -37 "kern" 10 -63 "kern" 68 -44 "kern"
 Comment: "char_L7_P24_x5225_y3967_x5441_y4283_Uw+AD0APQAA.svg"
 EndChar
 
@@ -3715,7 +3717,7 @@ SplineSet
  307 468 307 470 305 473 c 0
  305 481 268 495 261 497 c 0
 EndSplineSet
-Kerns2: 25 -42 "kern" 22 -34 "kern" 39 -55 "kern" 21 -75 "kern" 10 -57 "kern"
+Kerns2: 25 -42 "kern" 22 -34 "kern" 39 -55 "kern" 21 -75 "kern" 10 -57 "kern" 68 -29 "kern"
 Comment: "char_L5_P25_x5722_y3073_x5924_y3397_Qg+AD0APQAA.svg"
 EndChar
 
@@ -3773,8 +3775,9 @@ SplineSet
  331 389 321 452 309 500 c 0
  308 506 306 511 305 511 c 0
 EndSplineSet
-Kerns2: 25 -44 "kern" 22 -34 "kern" 57 -65 "kern"
-Substitution2: "ss01" U.ss01
+Kerns2: 25 -44 "kern" 22 -34 "kern" 57 -65 "kern" 68 -69 "kern"
+AlternateSubs2: "'aalt' Access All Alternates in Latin lookup 0 subtable" U.cv01
+Substitution2: "after_T" U.cv01
 Comment: "char_L7_P26_x5789_y3967_x5998_y4296_VQ+AD0APQAA.svg"
 EndChar
 
@@ -3898,8 +3901,9 @@ SplineSet
  418 146 465 209 480 257 c 0
  488 277 493 297 496 322 c 0
 EndSplineSet
-Kerns2: 25 -44 "kern" 22 -50 "kern" 57 -56 "kern" 131 -60 "kern" 132 -60 "kern"
-Substitution2: "ss01" W.ss01
+Kerns2: 25 -44 "kern" 22 -50 "kern" 57 -56 "kern" 68 -106 "kern" 131 -60 "kern" 132 -60 "kern"
+AlternateSubs2: "'aalt' Access All Alternates in Latin lookup 0 subtable" W.cv01
+Substitution2: "after_T" W.cv01
 Comment: "char_L6_P11_x2857_y3504_x3153_y3837_Vw+AD0APQAA.svg"
 EndChar
 
@@ -4006,7 +4010,8 @@ SplineSet
  398 517 404 526 404 536 c 0
 EndSplineSet
 Kerns2: 25 -102 "kern" 85 -68 "kern" 84 -58 "kern" 75 -67 "kern" 74 -61 "kern" 68 -133 "kern" 65 -49 "kern" 64 -56 "kern" 61 -70 "kern" 49 -52 "kern" 47 -57 "kern" 42 -87 "kern" 41 -131 "kern" 40 -118 "kern" 39 -82 "kern" 38 -116 "kern" 37 -137 "kern" 22 -159 "kern" 21 -88 "kern" 20 -138 "kern" 19 -163 "kern" 18 -128 "kern" 17 -122 "kern" 16 -128 "kern" 15 -110 "kern" 14 -102 "kern" 13 -98 "kern" 12 -110 "kern" 10 -81 "kern" 9 -97 "kern" 8 -117 "kern" 7 -153 "kern" 6 -117 "kern" 5 -137 "kern" 4 -110 "kern" 3 -110 "kern" 0 -147 "kern" 131 -60 "kern" 132 -60 "kern"
-Substitution2: "ss01" Y.ss01
+AlternateSubs2: "'aalt' Access All Alternates in Latin lookup 0 subtable" Y.cv01
+Substitution2: "after_T" Y.cv01
 Comment: "char_L4_P24_x8417_y2633_x8666_y2935_WQ+AD0APQAA.svg"
 EndChar
 
@@ -4268,7 +4273,7 @@ SplineSet
  125 527 103 522 103 517 c 0
  103 516 l 0
 EndSplineSet
-Kerns2: 25 -62 "kern" 87 -44 "kern" 77 -48 "kern" 59 -80 "kern" 58 -47 "kern" 52 -71 "kern" 22 -51 "kern" 57 -110 "kern" 131 -60 "kern" 132 -60 "kern"
+Kerns2: 25 -62 "kern" 87 -44 "kern" 77 -48 "kern" 59 -80 "kern" 58 -47 "kern" 52 -71 "kern" 22 -51 "kern" 57 -110 "kern" 68 -122 "kern" 131 -60 "kern" 132 -60 "kern"
 Comment: "char_L6_P5_x940_y3519_x1171_y3820_RA+AD0APQAA.svg"
 EndChar
 
@@ -4399,7 +4404,7 @@ SplineSet
  94 529 99 535 102 542 c 0
  108 556 137 575 158 579 c 0
 EndSplineSet
-Kerns2: 17 -185 "kern" 25 -117 "kern" 85 -40 "kern" 75 -32 "kern" 68 -80 "kern" 61 -39 "kern" 55 -135 "kern" 42 -63 "kern" 41 -121 "kern" 40 -106 "kern" 39 -82 "kern" 38 -110 "kern" 37 -125 "kern" 24 -96 "kern" 22 -162 "kern" 21 -82 "kern" 20 -131 "kern" 19 -151 "kern" 18 -134 "kern" 16 -114 "kern" 15 -130 "kern" 14 -109 "kern" 13 -129 "kern" 12 -111 "kern" 10 -66 "kern" 9 -118 "kern" 8 -105 "kern" 7 -143 "kern" 6 -126 "kern" 5 -127 "kern" 4 -103 "kern" 3 -122 "kern" 0 -134 "kern" 131 -60 "kern" 132 -60 "kern"
+Kerns2: 24 -64 "kern" 17 -185 "kern" 25 -117 "kern" 85 -40 "kern" 75 -32 "kern" 68 -80 "kern" 61 -39 "kern" 55 -135 "kern" 42 -63 "kern" 41 -121 "kern" 40 -106 "kern" 39 -82 "kern" 38 -110 "kern" 37 -125 "kern" 22 -162 "kern" 21 -82 "kern" 20 -131 "kern" 19 -151 "kern" 18 -134 "kern" 16 -114 "kern" 15 -130 "kern" 14 -109 "kern" 13 -129 "kern" 12 -111 "kern" 10 -66 "kern" 9 -118 "kern" 8 -105 "kern" 7 -143 "kern" 6 -126 "kern" 5 -127 "kern" 4 -103 "kern" 3 -122 "kern" 0 -134 "kern" 131 -60 "kern" 132 -60 "kern"
 Comment: "char_L6_P2_x472_y3527_x701_y3816_Rg+AD0APQAA.svg"
 EndChar
 
@@ -4475,7 +4480,7 @@ SplineSet
  227 272 223 277 221 301 c 0
  221 305 220 309 220 311 c 0
 EndSplineSet
-Kerns2: 39 -63 "kern" 10 -51 "kern" 25 -60 "kern" 22 -31 "kern" 57 -76 "kern" 21 -47 "kern" 131 -60 "kern" 132 -60 "kern"
+Kerns2: 39 -63 "kern" 10 -51 "kern" 25 -60 "kern" 22 -31 "kern" 57 -76 "kern" 21 -47 "kern" 68 -65 "kern" 131 -60 "kern" 132 -60 "kern"
 Comment: "char_L4_P6_x2155_y2625_x2381_y2926_Rw+AD0APQAA.svg"
 EndChar
 
@@ -4534,7 +4539,9 @@ SplineSet
  127 528 129 496 129 456 c 0
  129 409 127 351 124 315 c 1
 EndSplineSet
-Substitution2: "ss01" H.ss01
+Kerns2: 68 -45 "kern"
+AlternateSubs2: "'aalt' Access All Alternates in Latin lookup 0 subtable" H.cv01
+Substitution2: "after_T" H.cv01
 Comment: "char_L9_P27_x8646_y5354_x8835_y5629_SA+AD0APQAA.svg"
 EndChar
 
@@ -4544,9 +4551,9 @@ Width: 156
 VWidth: 171
 Flags: HW
 AnchorPoint: "lowerrightend" 91.7522 -4.9978 basechar 0
-AnchorPoint: "upperright" 116 565 basechar 0
+AnchorPoint: "upperright" 116 620 basechar 0
 AnchorPoint: "bottom" 68 5 basechar 0
-AnchorPoint: "top" 68 565 basechar 0
+AnchorPoint: "top" 68 620 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -4565,8 +4572,9 @@ SplineSet
  102 260 104 78 114 58 c 0
  116 55 117 47 117 40 c 0
 EndSplineSet
-Kerns2: 25 -32 "kern" 39 -33 "kern" 10 -33 "kern"
-Substitution2: "ss01" I.ss01
+Kerns2: 25 -32 "kern" 39 -33 "kern" 10 -33 "kern" 68 -39 "kern"
+AlternateSubs2: "'aalt' Access All Alternates in Latin lookup 0 subtable" I.cv01
+Substitution2: "after_T" I.cv01
 Comment: "char_L4_P8_x2852_y2634_x2905_y2934_SQ+AD0APQAA.svg"
 EndChar
 
@@ -4632,15 +4640,19 @@ SplineSet
  274 391 271 404 257 465 c 0
  254 480 252 485 250 485 c 0
 EndSplineSet
-Kerns2: 25 -122 "kern" 85 -63 "kern" 84 -55 "kern" 75 -57 "kern" 74 -72 "kern" 68 -127 "kern" 65 -56 "kern" 64 -49 "kern" 63 -39 "kern" 61 -66 "kern" 55 -117 "kern" 51 -39 "kern" 49 -58 "kern" 47 -53 "kern" 42 -78 "kern" 41 -95 "kern" 40 -86 "kern" 39 -87 "kern" 38 -88 "kern" 37 -100 "kern" 24 -100 "kern" 22 -121 "kern" 21 -89 "kern" 20 -102 "kern" 19 -124 "kern" 18 -103 "kern" 17 -126 "kern" 16 -87 "kern" 15 -100 "kern" 14 -83 "kern" 13 -95 "kern" 12 -85 "kern" 10 -76 "kern" 9 -96 "kern" 8 -85 "kern" 7 -108 "kern" 6 -97 "kern" 5 -98 "kern" 4 -81 "kern" 3 -89 "kern" 0 -103 "kern" 131 -60 "kern" 132 -60 "kern"
+Kerns2: 25 -122 "kern" 85 -63 "kern" 84 -55 "kern" 75 -57 "kern" 74 -72 "kern" 68 -127 "kern" 65 -56 "kern" 64 -49 "kern" 63 -39 "kern" 61 -66 "kern" 55 -117 "kern" 51 -39 "kern" 49 -58 "kern" 47 -53 "kern" 42 -78 "kern" 41 -95 "kern" 40 -86 "kern" 39 -87 "kern" 38 -88 "kern" 37 -100 "kern" 24 -100 "kern" 22 -121 "kern" 21 -89 "kern" 20 -102 "kern" 19 -124 "kern" 18 -103 "kern" 17 -126 "kern" 16 -87 "kern" 15 -100 "kern" 14 -83 "kern" 13 -95 "kern" 12 -85 "kern" 10 -76 "kern" 9 -96 "kern" 8 -85 "kern" 7 -108 "kern" 6 -97 "kern" 5 -98 "kern" 4 -81 "kern" 3 -89 "kern" 0 -103 "kern" 159 -80 "kern" 158 -80 "kern" 73 -40 "kern" 71 -80 "kern" 69 -40 "kern" 131 -60 "kern" 132 -60 "kern"
 Comment: "char_L4_P9_x3038_y2621_x3302_y2925_Sg+AD0APQAA.svg"
 EndChar
 
-StartChar: U.ss01
+StartChar: U.cv01
 Encoding: 1114118 -1 69
 Width: 447
 VWidth: 165
 Flags: HW
+AnchorPoint: "lowerrightend" 263.101 -5.19639 basechar 0
+AnchorPoint: "upperright" 407 573 basechar 0
+AnchorPoint: "bottom" 213.5 -11 basechar 0
+AnchorPoint: "top" 213.5 573 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -4675,7 +4687,7 @@ SplineSet
  219 -6 200 -11 180 -11 c 0
  170 -11 160 -10 150 -7 c 0
 EndSplineSet
-Comment: "char_L5_P0_x34_y3047_x266_y3393_VS5zczAx.svg"
+Comment: "char_L5_P0_x34_y3047_x266_y3393_VS5jdjAx.svg"
 EndChar
 
 StartChar: E_A
@@ -4796,16 +4808,20 @@ SplineSet
  754 404 725 453 710 471 c 0
  700 484 665 517 652 526 c 0
 EndSplineSet
-Kerns2: 25 -47 "kern" 87 -61 "kern" 77 -58 "kern" 58 -77 "kern" 52 -81 "kern" 39 -52 "kern" 10 -45 "kern"
+Kerns2: 25 -47 "kern" 87 -61 "kern" 77 -58 "kern" 58 -77 "kern" 52 -81 "kern" 39 -52 "kern" 10 -45 "kern" 68 -31 "kern"
 Ligature2: "liga" E A
 Comment: "char_L5_P20_x4474_y3054_x4938_y3374_RUE+AD0A.svg"
 EndChar
 
-StartChar: H.ss01
+StartChar: H.cv01
 Encoding: 1114120 -1 71
 Width: 420
 VWidth: 187
 Flags: HW
+AnchorPoint: "lowerrightend" 346.385 14.2331 basechar 0
+AnchorPoint: "upperright" 380 589 basechar 0
+AnchorPoint: "bottom" 200 18 basechar 0
+AnchorPoint: "top" 200 589 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -4862,7 +4878,7 @@ SplineSet
  302 365 l 1
  303 406 307 429 307 464 c 0
 EndSplineSet
-Comment: "char_L5_P22_x5066_y3068_x5262_y3377_SC5zczAx.svg"
+Comment: "char_L5_P22_x5066_y3068_x5262_y3377_SC5jdjAx.svg"
 EndChar
 
 StartChar: C_O
@@ -4970,16 +4986,20 @@ SplineSet
  659 349 644 395 620 423 c 0
  610 435 608 439 606 439 c 1
 EndSplineSet
-Kerns2: 25 -59 "kern" 87 -50 "kern" 77 -48 "kern" 59 -66 "kern" 58 -49 "kern" 52 -67 "kern" 22 -39 "kern" 57 -104 "kern"
+Kerns2: 25 -59 "kern" 87 -50 "kern" 77 -48 "kern" 59 -66 "kern" 58 -49 "kern" 52 -67 "kern" 22 -39 "kern" 57 -104 "kern" 68 -100 "kern"
 Ligature2: "liga" C O
 Comment: "char_L5_P34_x7615_y3065_x8003_y3377_Q08+AD0A.svg"
 EndChar
 
-StartChar: I.ss01
+StartChar: I.cv01
 Encoding: 1114122 -1 73
 Width: 166
 VWidth: 148
 Flags: HW
+AnchorPoint: "lowerrightend" 85.0887 -11.9979 basechar 0
+AnchorPoint: "upperright" 125 620 basechar 0
+AnchorPoint: "bottom" 76.5 -2 basechar 0
+AnchorPoint: "top" 76.5 620 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -5004,7 +5024,7 @@ SplineSet
  93 499 119 400 119 390 c 0
  120 333 125 303 125 254 c 0
 EndSplineSet
-Comment: "char_L5_P39_x8957_y3092_x9015_y3366_SS5zczAx.svg"
+Comment: "char_L5_P39_x8957_y3092_x9015_y3366_SS5jdjAx.svg"
 EndChar
 
 StartChar: C_R
@@ -5293,7 +5313,7 @@ SplineSet
  465 303 465 305 464 307 c 1
  464 300 463 293 461 287 c 1
 EndSplineSet
-Kerns2: 25 -38 "kern" 22 -50 "kern" 39 -36 "kern" 21 -30 "kern" 10 -39 "kern"
+Kerns2: 25 -38 "kern" 22 -50 "kern" 39 -36 "kern" 21 -30 "kern" 10 -39 "kern" 68 -60 "kern"
 Ligature2: "liga" O C H
 Comment: "char_L5_P41_x9424_y3065_x10054_y3388_T0NI.svg"
 EndChar
@@ -5615,7 +5635,7 @@ SplineSet
  471 535 446 527 441 520 c 0
  434 513 423 508 423 493 c 0
 EndSplineSet
-Kerns2: 25 -62 "kern" 87 -35 "kern" 77 -31 "kern" 58 -40 "kern" 52 -42 "kern" 22 -35 "kern" 57 -65 "kern" 39 -87 "kern" 21 -79 "kern" 10 -76 "kern"
+Kerns2: 25 -62 "kern" 87 -35 "kern" 77 -31 "kern" 58 -40 "kern" 52 -42 "kern" 22 -35 "kern" 57 -65 "kern" 39 -87 "kern" 21 -79 "kern" 10 -76 "kern" 68 -49 "kern"
 Ligature2: "liga" L B
 Comment: "char_L6_P21_x5690_y3514_x6085_y3863_TEI+AD0A.svg"
 EndChar
@@ -5993,7 +6013,7 @@ SplineSet
  699 337 678 379 670 405 c 0
  663 432 623 487 599 503 c 0
 EndSplineSet
-Kerns2: 25 -45 "kern" 87 -62 "kern" 77 -56 "kern" 58 -80 "kern" 52 -81 "kern" 39 -59 "kern" 21 -35 "kern" 10 -52 "kern"
+Kerns2: 25 -45 "kern" 87 -62 "kern" 77 -56 "kern" 58 -80 "kern" 52 -81 "kern" 39 -59 "kern" 21 -35 "kern" 10 -52 "kern" 68 -30 "kern"
 Ligature2: "liga" L A
 Comment: "char_L6_P8_x2001_y3521_x2413_y3841_TEE+AD0A.svg"
 EndChar
@@ -6066,7 +6086,7 @@ SplineSet
  250 14 244 12 241 10 c 0
  231 5 206 -2 198 -2 c 0
 EndSplineSet
-Kerns2: 58 -123 "kern" 25 -104 "kern" 87 -163 "kern" 86 -66 "kern" 85 -57 "kern" 84 -62 "kern" 82 -48 "kern" 81 -59 "kern" 80 -56 "kern" 79 -41 "kern" 78 -60 "kern" 77 -153 "kern" 76 -40 "kern" 75 -66 "kern" 74 -85 "kern" 72 -83 "kern" 70 -83 "kern" 68 -45 "kern" 67 -52 "kern" 66 -42 "kern" 65 -91 "kern" 64 -41 "kern" 63 -52 "kern" 62 -40 "kern" 61 -66 "kern" 59 -41 "kern" 57 -44 "kern" 56 -84 "kern" 55 -142 "kern" 54 -59 "kern" 53 -70 "kern" 52 -176 "kern" 51 -76 "kern" 50 -40 "kern" 49 -94 "kern" 48 -62 "kern" 47 -71 "kern" 46 -55 "kern" 45 -52 "kern" 44 -46 "kern" 43 -66 "kern" 42 -40 "kern" 41 -56 "kern" 40 -43 "kern" 39 -124 "kern" 38 -42 "kern" 37 -56 "kern" 24 -79 "kern" 23 -44 "kern" 22 -80 "kern" 21 -135 "kern" 20 -53 "kern" 19 -49 "kern" 18 -53 "kern" 17 -50 "kern" 16 -55 "kern" 15 -46 "kern" 14 -59 "kern" 13 -107 "kern" 12 -54 "kern" 11 -42 "kern" 10 -117 "kern" 9 -56 "kern" 8 -51 "kern" 7 -50 "kern" 6 -51 "kern" 5 -44 "kern" 4 -40 "kern" 3 -41 "kern" 2 -52 "kern" 1 -41 "kern" 0 -49 "kern"
+Kerns2: 25 -104 "kern" 58 -153 "kern" 87 -163 "kern" 86 -66 "kern" 85 -57 "kern" 84 -62 "kern" 82 -48 "kern" 81 -59 "kern" 80 -56 "kern" 79 -41 "kern" 78 -60 "kern" 77 -153 "kern" 76 -40 "kern" 75 -66 "kern" 74 -85 "kern" 72 -83 "kern" 70 -83 "kern" 68 -45 "kern" 67 -52 "kern" 66 -42 "kern" 65 -91 "kern" 64 -41 "kern" 63 -52 "kern" 62 -40 "kern" 61 -66 "kern" 59 -41 "kern" 57 -44 "kern" 56 -84 "kern" 55 -142 "kern" 54 -59 "kern" 53 -70 "kern" 52 -176 "kern" 51 -76 "kern" 50 -40 "kern" 49 -94 "kern" 48 -62 "kern" 47 -71 "kern" 46 -55 "kern" 45 -52 "kern" 44 -46 "kern" 43 -66 "kern" 42 -40 "kern" 41 -56 "kern" 40 -43 "kern" 39 -124 "kern" 38 -42 "kern" 37 -56 "kern" 24 -79 "kern" 23 -44 "kern" 22 -80 "kern" 21 -135 "kern" 20 -53 "kern" 19 -49 "kern" 18 -53 "kern" 17 -50 "kern" 16 -55 "kern" 15 -46 "kern" 14 -59 "kern" 13 -107 "kern" 12 -54 "kern" 11 -42 "kern" 10 -117 "kern" 9 -56 "kern" 8 -51 "kern" 7 -50 "kern" 6 -51 "kern" 5 -44 "kern" 4 -40 "kern" 3 -41 "kern" 2 -52 "kern" 1 -41 "kern" 0 -49 "kern"
 PairPos2: "sacc" uni0315 dx=0 dy=0 dh=0 dv=0 dx=-80 dy=0 dh=0 dv=0
 Ligature2: "liga" L L
 Comment: "char_L7_P10_x2191_y3991_x2569_y4284_TEw+AD0A.svg"
@@ -6203,6 +6223,7 @@ SplineSet
  204 446 203 446 202 446 c 0
  197 448 196 450 194 458 c 0
 EndSplineSet
+Kerns2: 68 -29 "kern"
 Ligature2: "liga" O N
 Comment: "char_L7_P22_x4721_y3961_x5142_y4266_T04+AD0A.svg"
 EndChar
@@ -6313,7 +6334,7 @@ SplineSet
  585 304 604 303 622 301 c 1
  632 300 l 1
 EndSplineSet
-Kerns2: 25 -63 "kern" 87 -77 "kern" 77 -71 "kern" 58 -103 "kern" 52 -96 "kern" 22 -31 "kern" 39 -77 "kern" 21 -64 "kern" 10 -69 "kern"
+Kerns2: 25 -63 "kern" 87 -77 "kern" 77 -71 "kern" 58 -103 "kern" 52 -96 "kern" 22 -31 "kern" 39 -77 "kern" 21 -64 "kern" 10 -69 "kern" 68 -31 "kern"
 Ligature2: "liga" C A
 Comment: "char_L7_P37_x8007_y3953_x8395_y4297_Q0E+AD0A.svg"
 EndChar
@@ -6443,7 +6464,7 @@ SplineSet
  268 328 302 346 321 364 c 0
  331 374 350 398 350 401 c 0
 EndSplineSet
-Kerns2: 25 -72 "kern" 87 -93 "kern" 77 -90 "kern" 58 -97 "kern" 52 -97 "kern" 57 -59 "kern" 39 -82 "kern" 21 -54 "kern" 10 -69 "kern"
+Kerns2: 25 -72 "kern" 87 -93 "kern" 77 -90 "kern" 58 -97 "kern" 52 -97 "kern" 57 -59 "kern" 39 -82 "kern" 21 -54 "kern" 10 -69 "kern" 68 -41 "kern"
 Ligature2: "liga" P S
 Comment: "char_L7_P39_x8642_y3958_x9066_y4281_UFM+AD0A.svg"
 EndChar
@@ -6532,7 +6553,7 @@ SplineSet
  476 396 474 396 472 398 c 0
  463 403 465 410 460 420 c 0
 EndSplineSet
-Kerns2: 25 -67 "kern" 87 -81 "kern" 77 -83 "kern" 59 -55 "kern" 58 -89 "kern" 52 -103 "kern" 22 -35 "kern" 57 -98 "kern" 39 -37 "kern" 10 -30 "kern"
+Kerns2: 25 -67 "kern" 87 -81 "kern" 77 -83 "kern" 59 -55 "kern" 58 -89 "kern" 52 -103 "kern" 22 -35 "kern" 57 -98 "kern" 39 -37 "kern" 10 -30 "kern" 68 -75 "kern"
 Ligature2: "liga" T O
 Comment: "char_L7_P40_x9024_y3971_x9390_y4284_VE8+AD0A.svg"
 EndChar
@@ -10887,11 +10908,15 @@ Flags: HW
 LayerCount: 2
 EndChar
 
-StartChar: W.ss01
+StartChar: W.cv01
 Encoding: 1114139 -1 158
 Width: 621
 VWidth: -20
 Flags: HW
+AnchorPoint: "lowerrightend" 408.114 13.0234 basechar 0
+AnchorPoint: "upperright" 581 604 basechar 0
+AnchorPoint: "bottom" 300.5 -30 basechar 0
+AnchorPoint: "top" 300.5 604 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -10956,11 +10981,15 @@ SplineSet
 EndSplineSet
 EndChar
 
-StartChar: Y.ss01
+StartChar: Y.cv01
 Encoding: 1114140 -1 159
 Width: 519
 VWidth: -41
 Flags: HW
+AnchorPoint: "lowerrightend" 288.803 -25.9685 basechar 0
+AnchorPoint: "upperright" 478.725 562.064 basechar 0
+AnchorPoint: "bottom" 249.362 -20 basechar 0
+AnchorPoint: "top" 249.362 562.064 basechar 0
 LayerCount: 2
 Fore
 SplineSet
@@ -12819,12 +12848,12 @@ Width: 156
 VWidth: 0
 Flags: HW
 AnchorPoint: "lowerrightend" 91.7522 -4.9978 basechar 0
-AnchorPoint: "upperright" 116 565 basechar 0
+AnchorPoint: "upperright" 116 620 basechar 0
 AnchorPoint: "bottom" 68 5 basechar 0
-AnchorPoint: "top" 68 739.8 basechar 0
+AnchorPoint: "top" 68 794.8 basechar 0
 LayerCount: 2
 Fore
-Refer: 161 768 N 1 0 0 1 286.5 89.7998 2
+Refer: 161 768 N 1 0 0 1 286.5 144.8 2
 Refer: 67 73 N 1 0 0 1 0 0 2
 EndChar
 
@@ -12834,12 +12863,12 @@ Width: 156
 VWidth: 0
 Flags: HW
 AnchorPoint: "lowerrightend" 91.7522 -4.9978 basechar 0
-AnchorPoint: "upperright" 116 565 basechar 0
+AnchorPoint: "upperright" 116 620 basechar 0
 AnchorPoint: "bottom" 68 5 basechar 0
-AnchorPoint: "top" 68 763.8 basechar 0
+AnchorPoint: "top" 68 818.8 basechar 0
 LayerCount: 2
 Fore
-Refer: 170 769 N 1 0 0 1 275.5 94.7998 2
+Refer: 170 769 N 1 0 0 1 275.5 149.8 2
 Refer: 67 73 N 1 0 0 1 0 0 2
 EndChar
 
@@ -12849,12 +12878,12 @@ Width: 156
 VWidth: 0
 Flags: HW
 AnchorPoint: "lowerrightend" 91.7522 -4.9978 basechar 0
-AnchorPoint: "upperright" 116 565 basechar 0
+AnchorPoint: "upperright" 116 620 basechar 0
 AnchorPoint: "bottom" 68 5 basechar 0
-AnchorPoint: "top" 68 812.4 basechar 0
+AnchorPoint: "top" 68 867.4 basechar 0
 LayerCount: 2
 Fore
-Refer: 175 770 N 1 0 0 1 290 163.25 2
+Refer: 175 770 N 1 0 0 1 290 218.25 2
 Refer: 67 73 N 1 0 0 1 0 0 2
 EndChar
 
@@ -12864,12 +12893,12 @@ Width: 156
 VWidth: 0
 Flags: HW
 AnchorPoint: "lowerrightend" 91.7522 -4.9978 basechar 0
-AnchorPoint: "upperright" 116 565 basechar 0
+AnchorPoint: "upperright" 116 620 basechar 0
 AnchorPoint: "bottom" 68 5 basechar 0
-AnchorPoint: "top" 68 718.8 basechar 0
+AnchorPoint: "top" 68 773.8 basechar 0
 LayerCount: 2
 Fore
-Refer: 164 776 N 1 0 0 1 243 81.7998 2
+Refer: 164 776 N 1 0 0 1 243 136.8 2
 Refer: 67 73 N 1 0 0 1 0 0 2
 EndChar
 
@@ -13962,12 +13991,12 @@ Width: 156
 VWidth: 0
 Flags: HW
 AnchorPoint: "lowerrightend" 91.7522 -4.9978 basechar 0
-AnchorPoint: "upperright" 116 565 basechar 0
+AnchorPoint: "upperright" 116 620 basechar 0
 AnchorPoint: "bottom" 68 5 basechar 0
-AnchorPoint: "top" 68 744.561 basechar 0
+AnchorPoint: "top" 68 799.561 basechar 0
 LayerCount: 2
 Fore
-Refer: 179 771 N 1 0 0 1 374.5 152.45 2
+Refer: 179 771 N 1 0 0 1 374.5 207.45 2
 Refer: 67 73 N 1 0 0 1 0 0 2
 EndChar
 
@@ -13989,12 +14018,12 @@ Width: 156
 VWidth: 0
 Flags: HW
 AnchorPoint: "lowerrightend" 91.7522 -4.9978 basechar 0
-AnchorPoint: "upperright" 116 565 basechar 0
+AnchorPoint: "upperright" 116 620 basechar 0
 AnchorPoint: "bottom" 68 5 basechar 0
-AnchorPoint: "top" 68 701.2 basechar 0
+AnchorPoint: "top" 68 756.2 basechar 0
 LayerCount: 2
 Fore
-Refer: 173 772 N 1 0 0 1 263 49.2002 2
+Refer: 173 772 N 1 0 0 1 263 104.2 2
 Refer: 67 73 N 1 0 0 1 0 0 2
 EndChar
 
@@ -14016,12 +14045,12 @@ Width: 156
 VWidth: 0
 Flags: HW
 AnchorPoint: "lowerrightend" 91.7522 -4.9978 basechar 0
-AnchorPoint: "upperright" 116 565 basechar 0
+AnchorPoint: "upperright" 116 620 basechar 0
 AnchorPoint: "bottom" 68 5 basechar 0
-AnchorPoint: "top" 68 733.025 basechar 0
+AnchorPoint: "top" 68 788.025 basechar 0
 LayerCount: 2
 Fore
-Refer: 194 774 N 1 0 0 1 278 105 2
+Refer: 194 774 N 1 0 0 1 278 160 2
 Refer: 67 73 N 1 0 0 1 0 0 2
 EndChar
 
@@ -14043,9 +14072,9 @@ Width: 156
 VWidth: 0
 Flags: HW
 AnchorPoint: "lowerrightend" 91.7522 -4.9978 basechar 0
-AnchorPoint: "upperright" 116 565 basechar 0
+AnchorPoint: "upperright" 116 620 basechar 0
 AnchorPoint: "bottom" 68 5 basechar 0
-AnchorPoint: "top" 68 565 basechar 0
+AnchorPoint: "top" 68 620 basechar 0
 LayerCount: 2
 Fore
 Refer: 196 808 N 1 0 0 1 301.752 -4.9978 2
@@ -14073,12 +14102,12 @@ Width: 156
 VWidth: 0
 Flags: HW
 AnchorPoint: "lowerrightend" 91.7522 -4.9978 basechar 0
-AnchorPoint: "upperright" 116 565 basechar 0
+AnchorPoint: "upperright" 116 620 basechar 0
 AnchorPoint: "bottom" 68 5 basechar 0
-AnchorPoint: "top" 68 735.6 basechar 0
+AnchorPoint: "top" 68 790.6 basechar 0
 LayerCount: 2
 Fore
-Refer: 185 775 N 1 0 0 1 165 189.6 2
+Refer: 185 775 N 1 0 0 1 165 244.6 2
 Refer: 67 73 N 1 0 0 1 0 0 2
 EndChar
 
@@ -15045,12 +15074,12 @@ Width: 156
 VWidth: 0
 Flags: HW
 AnchorPoint: "lowerrightend" 91.7522 -4.9978 basechar 0
-AnchorPoint: "upperright" 116 565 basechar 0
+AnchorPoint: "upperright" 116 620 basechar 0
 AnchorPoint: "bottom" 68 5 basechar 0
-AnchorPoint: "top" 68 812.4 basechar 0
+AnchorPoint: "top" 68 867.4 basechar 0
 LayerCount: 2
 Fore
-Refer: 177 780 N 1 0 0 1 290 163.25 2
+Refer: 177 780 N 1 0 0 1 290 218.25 2
 Refer: 67 73 N 1 0 0 1 0 0 2
 EndChar
 
