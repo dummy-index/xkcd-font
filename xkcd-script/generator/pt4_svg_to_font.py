@@ -39,7 +39,7 @@ def basic_font():
     font.familyname = font.fontname = 'XKCD'
     font.encoding = "UnicodeFull"
 
-    font.version = '1.0-d081';
+    font.version = '1.0-d082';
     font.weight = 'Regular';
     font.fontname = 'xkcdScript'
     font.familyname = 'xkcd Script'
@@ -527,7 +527,7 @@ def makeaccented(font, charto):
         ua = d[charto]
     if len(ua) <= 0:
         return
-    if ua[0] == '<compat>':
+    if ua[0][0] == '<':
         return
     if ua[0] == '0069' and (ua[1] in ['0' + format(i, 'X') for i in range(0x300, 0x314+1)]):
         ua[0] = '0131'  # i to dotlessi
@@ -574,20 +574,49 @@ def makeaccented(font, charto):
         c.right_side_bearing = 2 * space
         wadd = c.width - wadd
         font.__getitem__(charbase).addPosSub('sacc', characcent, wadd // 2, 0, wadd, 0, 0, 0, 0, 0)
+    if charbase == 'uni0237':  # dotlessj
+        wadd = c.width
+        space = 20
+        c.right_side_bearing = 2 * space
+        wadd = c.width - wadd
+        font.__getitem__(charbase).addPosSub('sacc', characcent, 0, 0, wadd, 0, 0, 0, 0, 0)
     if characcent == 'uni0315' and (charto == 'dcaron' or charto == 'lcaron'):
         c.width = c.width + 80
         font.__getitem__(charbase).addPosSub('sacc', 'uni0315', 0, 0, 80, 0, 0, 0, 0, 0)
-    
+    #
+    if charbase in list('ABCDEFGHIJKLMNOPQRSTUVWXYZ') + list('abcdefghijklmnopqrstuvwxyz'):
+        c.temporary = charbase
+    elif font.__getitem__(charbase).temporary is None:
+        c.temporary = 'x'
+    else:
+        c.temporary = font.__getitem__(charbase).temporary
+    if characcent == 'uni0315':
+        c.temporary = c.temporary + 'x'
+    #print(c.temporary)
 
 
-def makedigraph(font, chara, charb, charto, kerning=-120):
+def makedigraph(font, chara, charb, charto, kerning=-120, dy=0):
     c = font.createMappedChar(charto)
     
     # simulate pasteAppend
     c.addReference(chara)
     c.width = font.__getitem__(chara).width + kerning
-    c.addReference(charb, psMat.translate(c.width, 0))
+    c.addReference(charb, psMat.translate(c.width, dy))
     c.width = c.width + font.__getitem__(charb).width
+    #
+    if chara in list('ABCDEFGHIJKLMNOPQRSTUVWXYZ') + list('abcdefghijklmnopqrstuvwxyz'):
+        c.temporary = chara
+    elif font.__getitem__(chara).temporary is None:
+        c.temporary = 'x'
+    else:
+        c.temporary = font.__getitem__(chara).temporary
+    if charb in list('ABCDEFGHIJKLMNOPQRSTUVWXYZ') + list('abcdefghijklmnopqrstuvwxyz'):
+        c.temporary = c.temporary + charb
+    elif font.__getitem__(charb).temporary is None:
+        c.temporary = c.temporary + 'x'
+    else:
+        c.temporary = c.temporary + font.__getitem__(charb).temporary
+    #print(c.temporary)
 
 
 def makeaccent(font):
@@ -639,6 +668,7 @@ def makeaccent(font):
     l = font.__getitem__('dotlessi').foreground.dup()
     l.transform(psMat.compose(psMat.scale(1, 1.4), psMat.translate(-30, 160)))
     c.foreground += l
+    c.temporary = 'xJ'
     for i in range(ord('A'), ord('Z')+1):
         addanchor(font, i)
     for i in range(ord('a'), ord('z')+1):
@@ -666,12 +696,18 @@ def makeaccent(font):
         charto = fontforge.nameFromUnicode(i)
         if not font.__contains__(charto):
             makeaccented(font, charto)
-    makedigraph(font, 'D', 'Zcaron', 'uni01C4')  # U+01C4
-    makedigraph(font, 'D', 'zcaron', 'uni01C5')  # U+01C5
-    makedigraph(font, 'd', 'zcaron', 'uni01C6')  # U+01C6
-    makedigraph(font, 'D', 'Z', 'uni01F1')  # U+01F1
-    makedigraph(font, 'D', 'z', 'uni01F2')  # U+01F2
-    makedigraph(font, 'd', 'z', 'uni01F3')  # U+01F3
+    makedigraph(font, 'D', 'Zcaron', 'uni01C4', -80)  # U+01C4
+    makedigraph(font, 'D', 'zcaron', 'uni01C5', -40)  # U+01C5
+    makedigraph(font, 'd', 'zcaron', 'uni01C6', -40)  # U+01C6
+    makedigraph(font, 'L', 'J', 'uni01C7', -80, 20)  # U+01C7
+    makedigraph(font, 'L', 'j', 'uni01C8', -120)  # U+01C8
+    makedigraph(font, 'l', 'j', 'uni01C9', -80)  # U+01C9
+    makedigraph(font, 'N', 'J', 'uni01CA', -80)  # U+01CA
+    makedigraph(font, 'N', 'j', 'uni01CB', -80)  # U+01CB
+    makedigraph(font, 'n', 'j', 'uni01CC', -80)  # U+01CC
+    makedigraph(font, 'D', 'Z', 'uni01F1', -80)  # U+01F1
+    makedigraph(font, 'D', 'z', 'uni01F2', -40)  # U+01F2
+    makedigraph(font, 'd', 'z', 'uni01F3', -40)  # U+01F3
     
     font.__getitem__('L_L').addPosSub('sacc', 'uni0315', 0, 0, 0, 0, -80, 0, 0, 0)
     font.__getitem__('t_t').addPosSub('sacc', 'uni0315', 0, 0, 0, 0, -80, 0, 0, 0)
@@ -697,20 +733,20 @@ def autokern(font):
     lower = list('abcdefghijklmnopqrstuvwxyz') + lower_ligatures
     all_chars = caps + lower
     
-    accented = [name for name in all_glyphs if len(name) > 3 and name[1:] in ['grave', 'acute', 'circumflex', 'tilde', 'dieresis', 'ring', 'cedilla', 'macron', 'caron', 'hungarumlaut', 'dotaccent', 'breve', 'ogonek']]
+    composed = [(name, font.__getitem__(name).temporary) for name in all_glyphs if font.__getitem__(name).temporary is not None]
     variants = [name for name in all_glyphs if len(name) > 3 and name[1] == '.' and name[2:] in ['sc', 'cv01']]
     lvbar = list('BDEFHIKLMNPRbhklmnr')
-    lvbar = lvbar + [name for name in ligatures if name[0] in lvbar] + [name for name in accented if name[0] in lvbar] + [name for name in variants if name[0] in lvbar]
+    lvbar = lvbar + [name for name in ligatures if name[0] in lvbar] + [name for (name, base) in composed if base[0] in lvbar] + [name for name in variants if name[0] in lvbar]
     lbowl = list('ACGOQUacdeoqyu')
-    lbowl = lbowl + [name for name in ligatures if name[0] in lbowl] + [name for name in accented if name[0] in lbowl] + [name for name in variants if name[0] in lbowl]
+    lbowl = lbowl + [name for name in ligatures if name[0] in lbowl] + [name for (name, base) in composed if base[0] in lbowl] + [name for name in variants if name[0] in lbowl]
     lcmplx = list('JSTVWXYZfgijpstvwxz')
-    lcmplx = lcmplx + [name for name in ligatures if name[0] in lcmplx] + [name for name in accented if name[0] in lcmplx] + [name for name in variants if name[0] in lcmplx]
+    lcmplx = lcmplx + [name for name in ligatures if name[0] in lcmplx] + [name for (name, base) in composed if base[0] in lcmplx] + [name for name in variants if name[0] in lcmplx]
     rvbar = list('HIMNdhlmn')
-    rvbar = rvbar + [name for name in ligatures if name[-1] in rvbar] + [name for name in accented if name[0] in rvbar] + [name for name in variants if name[0] in rvbar]
+    rvbar = rvbar + [name for name in ligatures if name[-1] in rvbar] + [name for (name, base) in composed if base[-1] in rvbar] + [name for name in variants if name[0] in rvbar]
     rbowl = list('ABDOSUbgjopsuy')
-    rbowl = rbowl + [name for name in ligatures if name[-1] in rbowl] + [name for name in accented if name[0] in rbowl] + [name for name in variants if name[0] in rbowl]
+    rbowl = rbowl + [name for name in ligatures if name[-1] in rbowl] + [name for (name, base) in composed if base[-1] in rbowl] + [name for name in variants if name[0] in rbowl]
     rcmplx = list('CEFGJKLPQRTVWXYZacefikqrtvwxz')
-    rcmplx = rcmplx + [name for name in ligatures if name[-1] in rcmplx] + [name for name in accented if name[0] in rcmplx] + [name for name in variants if name[0] in rcmplx]
+    rcmplx = rcmplx + [name for name in ligatures if name[-1] in rcmplx] + [name for (name, base) in composed if base[-1] in rcmplx] + [name for name in variants if name[0] in rcmplx]
     
     t = psMat.translate(0, -30)
     font.__getitem__('T').transform(t)
@@ -759,7 +795,8 @@ def autokern(font):
     font.autoKern('kern', 20, ['L', 'L_L', 'E', 'E_E'], all_chars, minKern=30, onlyCloser=True, touch=True)
     font.autoKern('kern', 80, ['L', 'L_L'], ['Y'], touch=True)
     font.autoKern('kern', 110, ['L', 'L_L'], ['j'], touch=True)
-    font.autoKern('kern', 60, ['E', 'E_E'], ['V', 'v'], touch=True)
+    font.autoKern('kern', 40, ['E', 'E_E'], ['i', 'Q'], touch=True)
+    font.autoKern('kern', 60, ['E', 'E_E'], ['f', 'G', 't', 't_t', 'V', 'v'], touch=True)
     font.autoKern('kern', 80, ['E', 'E_E'], ['j'], touch=True)
     font.autoKern('kern', 70, ['a', 'G'], ['t', 't_t'], touch=True)
     font.autoKern('kern', 30, ['i', 'r_i'], ['f', 't'], touch=True)
@@ -825,6 +862,10 @@ for line, position, bbox, fname, chars in characters:
         characters.append([line, None, bbox, fname, (u'«',)])
     if chars == (u'≫',):
         characters.append([line, None, bbox, fname, (u'»',)])
+    if chars == ('<',):
+        characters.append([line, None, bbox, fname, (u'‹',)])
+    if chars == ('>',):
+        characters.append([line, None, bbox, fname, (u'›',)])
 
 for line, position, bbox, fname, chars in characters:
     if chars in special_choices:
@@ -855,11 +896,13 @@ for line, position, bbox, fname, chars in characters:
     if chars == ('U', '.', 'c', 'v', '0', '1'):
         c.transform(psMat.scale(0.9))
         weight_glyph(c, 8)
-    if chars == ('I', '.', 's', 'c'):
-        c.transform(psMat.translate(0, -30))
     if chars == ('I', '.', 'c', 'v', '0', '1'):
         c.transform(psMat.translate(0, -40))
         rotate_glyph(c, -2)
+    if chars == ('I', '.', 's', 'c'):
+        c.transform(psMat.translate(0, -30))
+    if (line == 3 and position in range(25, 27)) or (line == 9 and position in range(33, 36)):  # "ca"mpstool, "CAN'"T
+        c.transform(psMat.translate(0, -20))
     if chars == ('|',):
         c.transform(psMat.compose(psMat.scale(1, 1.3), psMat.translate(0, -100)))
     if chars == ('-',) or chars == (u'‐',):
@@ -870,6 +913,8 @@ for line, position, bbox, fname, chars in characters:
         c.transform(psMat.translate(0, 220))
     if chars == (u'«',) or chars == (u'»',):
         c.transform(psMat.scale(0.8, 1.0))
+    if chars == (u'‹',) or chars == (u'›',):
+        c.transform(psMat.compose(psMat.scale(0.8), psMat.translate(0, 50)))
     if chars == (u'‘',):
         rotate_glyph(c, 15)
     if chars == (u'’',):
@@ -888,8 +933,37 @@ for line, position, bbox, fname, chars in characters:
     c.addExtrema('only_good_rm')
     c.round()
 
-c = font.createMappedChar(32)
-c.width = 256
+c = font.createMappedChar(0x20)  # space
+c.width = round(font.em * 0.3)
+c = font.createMappedChar(0xA0)  # NBSP
+c.width = round(font.em * 0.3)
+c = font.createMappedChar(0x2002)  # en space
+c.width = round(font.em * 0.5)
+c = font.createMappedChar(0x2003)  # em space
+c.width = round(font.em * 1.0)
+c = font.createMappedChar(0x2004)  # three-per-em space
+c.width = round(font.em / 3.0)
+c = font.createMappedChar(0x2005)  # four-per-em space
+c.width = round(font.em / 4.0)
+c = font.createMappedChar(0x2006)  # six-per-em space
+c.width = round(font.em / 6.0)
+c = font.createMappedChar(0x200B)  # ZWSP
+c.width = 0
+c = font.createMappedChar(0x200C)  # ZWNJ
+c.width = 0
+c = font.createMappedChar(0x200D)  # ZWJ
+c.width = 0
+c = font.createMappedChar(0x2060)  # WJ
+c.width = 0
+
+font.selection.select(0x2D)  # hyphen-minus
+font.copyReference()
+font.selection.select(0xAD)  # SHY
+font.paste()
+font.selection.select(0x2010)  # hyphen
+font.copyReference()
+font.selection.select(0x2011)  # non-breaking hyphen
+font.paste()
 
 c = font.createChar(-1, 'W.cv01')
 c.width = font.__getitem__('W').width
