@@ -50,8 +50,8 @@ u n a u t h o ri t a t i v e n e s s   l e a t h e r b a r k   i n t r a co l i 
 g l as s w e e d   r o tt o l o   a l b e r t i  t e   h e r m a t o rr h a c h i s   o r g a n o m e t a l l i c
 s e g r e g a t i o n i s t   u n e v a n g e l i c   c a m p s t oo l
 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z I-pronoun
-U.cv01 N A U T H O R I T A T I V E N E S S   L EA T H.cv01 E R B A R K   I N T R A CO L I C   M I.cv01 CR OCH E L I A
-O F F S I D ER   G LA S S W EE D   R O TT O L O   A LB E R T I T E   H ER M A T O RR H A C H I S
+U.cv01 N A U T H O R I T A T I V E N E S S   L EA T H.cv01 E R B A R K   I N T R A CO L I C   M I CR OCH E L I A
+O F F S I D ER   G LA S S W EE D   R O TT O L O   A LB E R T I.cv01 T E   H ER M A T O RR H A C H I S
 O R G A N O M E T A LL I C   S E G R E G A T I.sc ON I S T   U N E V A N G E L I C   CA M PS TO O L
 + − × * ! ? # @ $ % ¦ & ^ _ — – - ( ) [ ] { } / \ < > ÷ ± √ Σ
 1 2 3 4 5 6 7 8 9 0 ∫ = ≈ ≠ ~ ≤ ≥ |> <| 🎂 . , ; : “ H I ” ‘ ’ C A N ′ T ' "

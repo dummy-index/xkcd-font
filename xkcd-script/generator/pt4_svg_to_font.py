@@ -39,7 +39,7 @@ def basic_font():
     font.familyname = font.fontname = 'XKCD'
     font.encoding = "UnicodeFull"
 
-    font.version = '1.0-d082';
+    font.version = '1.0-d083';
     font.weight = 'Regular';
     font.fontname = 'xkcdScript'
     font.familyname = 'xkcd Script'
@@ -379,7 +379,8 @@ def getaccent(font, src, glyph, comb, scale=1.0, anchorclass='top'):
     elif anchorclass == 'bottom':
         rspace = 2 * space
         _, ymin, _, ymax = ccomb.boundingBox()
-        ccomb.addAnchorPoint(anchorclass, 'mark', (xmin + xmax) / 2, ymax)
+        ybottom = 0.8 * ymax + 0.2 * ymin + 65
+        ccomb.addAnchorPoint(anchorclass, 'mark', (xmin + xmax) / 2, ybottom)
     else:
         rspace = 2 * space
         ccomb.addAnchorPoint(anchorclass, 'mark', (xmin + xmax) / 2, ytop)
@@ -452,6 +453,9 @@ def makecombslash(font):
     c.foreground = font.__getitem__('slash').foreground.dup()
     rotate_and_onto_baseline(c, -10)
     c.transform(psMat.translate(-c.width, 0))
+    c = font.createChar(-1, 'bitslash')
+    c.foreground = font.__getitem__('hyphen').foreground.dup()
+    rotate_glyph(c, 35)
 
 
 def makebreve(font):
@@ -510,6 +514,26 @@ def makeogonek(font):
     c.addAnchorPoint('lowerrightend', 'mark', 0, 0)
     c.transform(psMat.translate(-210, 0))
     c.width = 0
+
+
+def makeeth(font):
+    c = font.createMappedChar('eth')
+    l1 = font.__getitem__('U').foreground.dup()
+    l2 = font.__getitem__('minus').foreground.dup()
+    rotate_glyph(l1, 45)
+    l1.transform(psMat.translate(-80, 0))
+    l2.exclude(l1)
+    (l3, _) = getcontours(l2, 300)
+    l3 += font.__getitem__('o').foreground
+    c.foreground = l3
+    space = 20
+    c.left_side_bearing = space
+    c.right_side_bearing = 2 * space
+    l4 = font.__getitem__('bitslash').foreground.dup()
+    l4.transform(psMat.translate(0, 200))
+    c.foreground += l4
+    c.removeOverlap()
+    c.temporary = 'xo'
 
 
 import unicodedata
@@ -587,7 +611,7 @@ def makeaccented(font, charto):
     if charbase in list('ABCDEFGHIJKLMNOPQRSTUVWXYZ') + list('abcdefghijklmnopqrstuvwxyz'):
         c.temporary = charbase
     elif font.__getitem__(charbase).temporary is None:
-        c.temporary = 'x'
+        c.temporary = '|'
     else:
         c.temporary = font.__getitem__(charbase).temporary
     if characcent == 'uni0315':
@@ -643,18 +667,48 @@ def makeaccent(font):
     font.__getitem__('minute').transform(psMat.translate(0, 80))
     getaccent(font, 'Ohungarumlaut', 'hungarumlaut', 'uni030B')
     getaccent(font, 'j', 'dotaccent', 'uni0307')
+    getaccent(font, 'period', 'uni02A3', 'dotbelowcomb', anchorclass='bottom')
+    font.removeGlyph('uni02A3')  # temporary use
+    font.__getitem__('dotbelowcomb').transform(psMat.translate(0, -100))
     rotate_glyph(font.__getitem__('comma'))
     font.__getitem__('comma').transform(psMat.translate(0, 600))
     getaccent(font, 'comma', 'uni02BB', 'uni0312')
     font.__getitem__('comma').transform(psMat.translate(0, -600))
     rotate_glyph(font.__getitem__('comma'))
-    getaccent(font, 'comma', 'uni02CF', 'uni0326', anchorclass='bottom')
-    font.removeGlyph('uni02CF')  # temporary use
+    getaccent(font, 'comma', 'uni02A3', 'uni0326', anchorclass='bottom')
+    font.removeGlyph('uni02A3')  # temporary use
+    font.__getitem__('uni0326').transform(psMat.translate(0, -100))
+    font.__getitem__('macron').transform(psMat.translate(0, -700))
+    getaccent(font, 'macron', 'uni02CD', 'uni0331', anchorclass='bottom')
+    font.__getitem__('macron').transform(psMat.translate(0, 700))
     
     makecedilla(font)
     makecombslash(font)
     makebreve(font)
     makeogonek(font)
+    
+    makeeth(font)
+    combine = [
+        ('Eth', 'D', 'hyphen', -80, 0),
+        ('dcroat', 'd', 'hyphen', 140, 200),
+        ('Hbar', 'H', 'endash', -40, 200),
+        ('hbar', 'h', 'hyphen', -80, 200),
+        ('Lslash', 'L', 'bitslash', -100, 0),
+        ('lslash', 'l', 'bitslash', -100, 0),
+        ('Tbar', 'T', 'hyphen', 20, 0),
+        ('tbar', 't', 'hyphen', -30, -70),
+    ]
+    for i in combine:
+        c = font.createMappedChar(i[0])
+        c.addReference(i[1])
+        c.width = font.__getitem__(i[1]).width
+        c.addReference(i[2], psMat.translate(i[3], i[4]))
+        c.temporary = i[1]
+    font.selection.select('Eth')
+    font.copyReference()
+    font.selection.select('Dcroat')
+    font.paste()
+    
     
     getbase(font.__getitem__('i'), font.createMappedChar('dotlessi'), lowercase=True)
     getbase(font.__getitem__('j'), font.createMappedChar('uni0237'), lowercase=True)
@@ -692,7 +746,11 @@ def makeaccent(font):
     makedigraph(font, 'i', 'j', 'ij')  # U+0133
     makedigraph(font, 'O', 'E', 'OE')  # U+0152
     makedigraph(font, 'o', 'e', 'oe')  # U+0153
-    for i in range(0x00C0, 0x01FF+1):
+    for i in range(0x00C0, 0x0233+1):
+        charto = fontforge.nameFromUnicode(i)
+        if not font.__contains__(charto):
+            makeaccented(font, charto)
+    for i in range(0x01E0, 0x01E1+1):
         charto = fontforge.nameFromUnicode(i)
         if not font.__contains__(charto):
             makeaccented(font, charto)
@@ -748,7 +806,7 @@ def autokern(font):
     rcmplx = list('CEFGJKLPQRTVWXYZacefikqrtvwxz')
     rcmplx = rcmplx + [name for name in ligatures if name[-1] in rcmplx] + [name for (name, base) in composed if base[-1] in rcmplx] + [name for name in variants if name[0] in rcmplx]
     
-    t = psMat.translate(0, -30)
+    t = psMat.translate(0, -10)
     font.__getitem__('T').transform(t)
     font.__getitem__('T_T').transform(t)
 
@@ -774,12 +832,14 @@ def autokern(font):
         font.__getitem__('J').addPosSub('kern', char, kern)
     
     # ascending order in 'separation.'
+    font.autoKern('kern', 30, ['e'], all_chars, minKern=30, onlyCloser=True, touch=True)
     font.autoKern('kern', 30, all_chars, ['J'], minKern=30, onlyCloser=True, touch=True)
     font.autoKern('kern', 30, ['C'], all_chars, minKern=30)
     font.autoKern('kern', 60, ['r'], all_chars, minKern=30, onlyCloser=True)
     font.autoKern('kern', 80, ['R', 'C_R', 'E_R', 'R_R', 'X'], all_chars, minKern=30, onlyCloser=True)
     font.autoKern('kern', 80, all_chars, ['X', 'f', 't', 't_t'], minKern=30, onlyCloser=True)
     font.autoKern('kern', 90, all_chars, ['g'], minKern=30, onlyCloser=True)
+    font.autoKern('kern', 90, ['E', 'E_E'], all_chars, minKern=30, onlyCloser=True)
     font.autoKern('kern', 90, ['V', 'v'], all_chars, minKern=30, onlyCloser=True)
     font.autoKern('kern', 100, ['K', 'k'], all_chars, minKern=30, onlyCloser=True)
     font.autoKern('kern', 120, all_chars, ['T', 'Y', 'Z'], minKern=30, onlyCloser=True)
@@ -792,14 +852,16 @@ def autokern(font):
     font.autoKern('kern', 200, ['T_T'], all_chars, minKern=30, onlyCloser=True)
     
     # minKern not affect when touch=True?
-    font.autoKern('kern', 20, ['L', 'L_L', 'E', 'E_E'], all_chars, minKern=30, onlyCloser=True, touch=True)
+    font.autoKern('kern', 20, ['L', 'L_L'], all_chars, minKern=30, onlyCloser=True, touch=True)
     font.autoKern('kern', 80, ['L', 'L_L'], ['Y'], touch=True)
     font.autoKern('kern', 110, ['L', 'L_L'], ['j'], touch=True)
-    font.autoKern('kern', 40, ['E', 'E_E'], ['i', 'Q'], touch=True)
-    font.autoKern('kern', 60, ['E', 'E_E'], ['f', 'G', 't', 't_t', 'V', 'v'], touch=True)
+    font.autoKern('kern', 20, ['E', 'E_E'], ['g'], touch=True)
+    font.autoKern('kern', 60, ['E', 'E_E'], ['f', 't', 't_t', 'V', 'v'], touch=True)
     font.autoKern('kern', 80, ['E', 'E_E'], ['j'], touch=True)
     font.autoKern('kern', 70, ['a', 'G'], ['t', 't_t'], touch=True)
     font.autoKern('kern', 30, ['i', 'r_i'], ['f', 't'], touch=True)
+    font.autoKern('kern', 30, ['f'], ['f', 't', 't_t'], touch=True)
+    font.autoKern('kern', 60, ['t_t'], ['f'], touch=True)
     font.autoKern('kern', 60, ['X', 'Z'], ['f', 't', 't_t'], touch=True)
     font.autoKern('kern', 60, ['r'], ['J', 'T', 'T_O', 'T_T', 'X', 'Z', 'j'], touch=True)
     font.autoKern('kern', 100, ['r_r'], ['J', 'T', 'T_O', 'T_T', 'X', 'Z', 'j'], touch=True)
@@ -811,7 +873,7 @@ def autokern(font):
     font.autoKern('kern', 30, ['F', 'f', 'r'], ['i'], touch=True)
     font.__getitem__('T_T').addPosSub('kern', 'O', -70)
     
-    t = psMat.translate(0, 30)
+    t = psMat.translate(0, 10)
     font.__getitem__('T').transform(t)
     font.__getitem__('T_T').transform(t)
 
@@ -850,6 +912,8 @@ special_choices = {('C', ): dict(line=4),
 for line, position, bbox, fname, chars in characters:
     if chars == ('I',) and line == 4:
         characters.append([4, None, bbox, fname, ('|',)])
+    if chars == ('K',) and line == 4:
+        characters.append([4, None, bbox, fname, (u'ĸ',)])
     if chars == ('-',):
         characters.append([line, None, bbox, fname, (u'‐',)])
     if chars == ('.',):
@@ -896,15 +960,15 @@ for line, position, bbox, fname, chars in characters:
     if chars == ('U', '.', 'c', 'v', '0', '1'):
         c.transform(psMat.scale(0.9))
         weight_glyph(c, 8)
-    if chars == ('I', '.', 'c', 'v', '0', '1'):
-        c.transform(psMat.translate(0, -40))
-        rotate_glyph(c, -2)
     if chars == ('I', '.', 's', 'c'):
         c.transform(psMat.translate(0, -30))
-    if (line == 3 and position in range(25, 27)) or (line == 9 and position in range(33, 36)):  # "ca"mpstool, "CAN'"T
+    if (line == 3 and position in range(25, 27)) or (line == 9 and position in range(32, 37)):  # "ca"mpstool, "CAN'T"
         c.transform(psMat.translate(0, -20))
     if chars == ('|',):
         c.transform(psMat.compose(psMat.scale(1, 1.3), psMat.translate(0, -100)))
+    if chars == (u'ĸ',):
+        c.transform(psMat.compose(psMat.scale(0.95, 0.8), psMat.rotate(math.radians(-2))))
+        weight_glyph(c, 6)
     if chars == ('-',) or chars == (u'‐',):
         c.transform(psMat.scale(0.9, 1.0))
     if chars == (u'‐',):
