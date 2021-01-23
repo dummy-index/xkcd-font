@@ -39,7 +39,7 @@ def basic_font():
     font.familyname = font.fontname = 'XKCD'
     font.encoding = "UnicodeFull"
 
-    font.version = '1.0-d083';
+    font.version = '1.0-d084';
     font.weight = 'Regular';
     font.fontname = 'xkcdScript'
     font.familyname = 'xkcd Script'
@@ -365,6 +365,8 @@ def getaccent(font, src, glyph, comb, scale=1.0, anchorclass='top'):
     #print(src, 0.2 * ymax + 0.8 * ymin - (65 / scale))
     if 0.2 * ymax + 0.8 * ymin - (65 / scale) > ytop:
         ytop = 0.2 * ymax + 0.8 * ymin - (65 / scale)
+    if anchorclass == 'bottom':
+        ytop = 0
     t = psMat.translate(-(xmin + xmax) / 2, -ytop)
     lto.transform(psMat.compose(psMat.compose(t, psMat.scale(scale)), psMat.inverse(t)))
     ccomb = font.createMappedChar(comb)
@@ -536,6 +538,35 @@ def makeeth(font):
     c.temporary = 'xo'
 
 
+def makeeng(font):
+    c = font.createMappedChar('eng')
+    l1 = font.__getitem__('g').foreground.dup()
+    l2 = font.__getitem__('minus').foreground.dup()
+    l1.transform(psMat.translate(-58, 2))
+    l2.transform(psMat.translate(0, -200))
+    l2.exclude(l1)
+    (_, l3) = getcontours(l2, 0)
+    l3 += font.__getitem__('n').foreground
+    c.foreground = l3
+    c.width = font.__getitem__('n').width
+    c.removeOverlap()
+    c.temporary = 'n'
+
+
+def makethorn(font):
+    c = font.createMappedChar('thorn')
+    l1 = font.__getitem__('I.cv01').foreground.dup()
+    l1.stroke('circular', 2, 'round', 'round', ('removeexternal',))
+    l1.transform(psMat.scale(1, 1.2))
+    l1.transform(psMat.translate(5, 25))
+    (_, l3) = getcontours(l1, 300, below=True)
+    l3 += font.__getitem__('p').foreground
+    c.foreground = l3
+    c.width = font.__getitem__('p').width
+    c.removeOverlap()
+    c.temporary = 'p'
+
+
 import unicodedata
 
 def makeaccented(font, charto):
@@ -672,10 +703,10 @@ def makeaccent(font):
     font.__getitem__('dotbelowcomb').transform(psMat.translate(0, -100))
     rotate_glyph(font.__getitem__('comma'))
     font.__getitem__('comma').transform(psMat.translate(0, 600))
-    getaccent(font, 'comma', 'uni02BB', 'uni0312')
+    getaccent(font, 'comma', 'uni02BB', 'uni0312', scale=0.8)
     font.__getitem__('comma').transform(psMat.translate(0, -600))
     rotate_glyph(font.__getitem__('comma'))
-    getaccent(font, 'comma', 'uni02A3', 'uni0326', anchorclass='bottom')
+    getaccent(font, 'comma', 'uni02A3', 'uni0326', scale=0.8, anchorclass='bottom')
     font.removeGlyph('uni02A3')  # temporary use
     font.__getitem__('uni0326').transform(psMat.translate(0, -100))
     font.__getitem__('macron').transform(psMat.translate(0, -700))
@@ -708,6 +739,8 @@ def makeaccent(font):
     font.copyReference()
     font.selection.select('Dcroat')
     font.paste()
+    makeeng(font)
+    makethorn(font)
     
     
     getbase(font.__getitem__('i'), font.createMappedChar('dotlessi'), lowercase=True)
@@ -962,7 +995,7 @@ for line, position, bbox, fname, chars in characters:
         weight_glyph(c, 8)
     if chars == ('I', '.', 's', 'c'):
         c.transform(psMat.translate(0, -30))
-    if (line == 3 and position in range(25, 27)) or (line == 9 and position in range(32, 37)):  # "ca"mpstool, "CAN'T"
+    if (line == 3 and position in range(25, 31)) or (line == 9 and position in range(32, 37)):  # "campst"ool, "CAN'T"
         c.transform(psMat.translate(0, -20))
     if chars == ('|',):
         c.transform(psMat.compose(psMat.scale(1, 1.3), psMat.translate(0, -100)))
